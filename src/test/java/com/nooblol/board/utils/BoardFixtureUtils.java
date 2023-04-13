@@ -8,7 +8,7 @@ import java.util.List;
 public class BoardFixtureUtils {
 
   public static List<BbsDto> BbsListFixtureByCategoryIdAndStatusAndUserID(
-      int categoryId, int status, String adminUserId) {
+      int categoryId, BoardStatus status, String adminUserId) {
     List<BbsDto> responseList = new ArrayList<BbsDto>();
     responseList.add(
         new BbsDto().builder()
@@ -40,7 +40,7 @@ public class BoardFixtureUtils {
     responseList.add(
         new BbsDto().builder()
             .bbsId(1).categoryId(1).bbsName("Sample BbsName1")
-            .status(BoardStatusEnum.ACTIVE.getStatus())
+            .status(BoardStatus.ACTIVE)
             .createdUserId(adminUserId).createdAt(LocalDateTime.now())
             .updatedUserId(adminUserId).updatedAt(LocalDateTime.now())
             .build()
@@ -48,7 +48,7 @@ public class BoardFixtureUtils {
     responseList.add(
         new BbsDto().builder()
             .bbsId(2).categoryId(2).bbsName("Sample BbsName2")
-            .status(BoardStatusEnum.ACTIVE.getStatus())
+            .status(BoardStatus.ACTIVE)
             .createdUserId(adminUserId).createdAt(LocalDateTime.now())
             .updatedUserId(adminUserId).updatedAt(LocalDateTime.now())
             .build()
@@ -56,7 +56,7 @@ public class BoardFixtureUtils {
     responseList.add(
         new BbsDto().builder()
             .bbsId(3).categoryId(3).bbsName("Sample BbsName3")
-            .status(BoardStatusEnum.ACTIVE.getStatus())
+            .status(BoardStatus.ACTIVE)
             .createdUserId(adminUserId).createdAt(LocalDateTime.now())
             .updatedUserId(adminUserId).updatedAt(LocalDateTime.now())
             .build()
@@ -64,7 +64,7 @@ public class BoardFixtureUtils {
     responseList.add(
         new BbsDto().builder()
             .bbsId(4).categoryId(3).bbsName("Sample BbsName4")
-            .status(BoardStatusEnum.DELETE.getStatus())
+            .status(BoardStatus.ACTIVE)
             .createdUserId(adminUserId).createdAt(LocalDateTime.now())
             .updatedUserId(adminUserId).updatedAt(LocalDateTime.now())
             .build()

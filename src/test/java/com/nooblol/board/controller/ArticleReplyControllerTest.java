@@ -15,10 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nooblol.board.dto.ReplyRequestDto.ReplyInsertDto;
-import com.nooblol.board.dto.ReplyRequestDto.ReplyUpdateDto;
+import com.nooblol.board.dto.ReplyInsertDto;
+import com.nooblol.board.dto.ReplyUpdateDto;
 import com.nooblol.board.service.ArticleReplyService;
-import com.nooblol.board.utils.BoardStatusEnum;
+import com.nooblol.board.utils.ReplyStatus;
 import com.nooblol.global.utils.RestDocConfiguration;
 import com.nooblol.global.utils.SessionSampleObject;
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ class ArticleReplyControllerTest {
     ReplyInsertDto requestDto = new ReplyInsertDto().builder()
         .articleId(articleId)
         .replyContent("Sample Reply Content")
-        .status(BoardStatusEnum.ACTIVE.getStatus())
+        .status(ReplyStatus.ACTIVE)
         .build();
     MockHttpSession session = (MockHttpSession) SessionSampleObject.authUserLoginSession;
 
@@ -71,7 +71,7 @@ class ArticleReplyControllerTest {
 
     //when & then
     mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/article/reply/add")
+            RestDocumentationRequestBuilders.post("/article/reply/")
                 .content(objectMapper.writeValueAsBytes(requestDto))
                 .session(session).contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
@@ -110,7 +110,7 @@ class ArticleReplyControllerTest {
         .replyId(replyId)
         .articleId(articleId)
         .replyContent("Sample Update Reply Content")
-        .status(BoardStatusEnum.ACTIVE.getStatus())
+        .status(ReplyStatus.ACTIVE)
         .sortNo(1)
         .build();
 
@@ -122,7 +122,7 @@ class ArticleReplyControllerTest {
 
     //when & then
     mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/article/reply/update")
+            RestDocumentationRequestBuilders.put("/article/reply/")
                 .content(objectMapper.writeValueAsBytes(requestDto))
                 .session(session).contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk())
@@ -166,7 +166,7 @@ class ArticleReplyControllerTest {
 
     //when & then
     mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/article/reply/delete/{replyId}", replyId)
+            RestDocumentationRequestBuilders.delete("/article/reply/{replyId}", replyId)
                 .session(session)
         ).andExpect(status().isOk())
         .andExpect(jsonPath("$.resultCode", Is.is(HttpStatus.OK.value())))

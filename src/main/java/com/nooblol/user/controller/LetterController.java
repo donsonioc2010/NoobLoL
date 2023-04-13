@@ -117,7 +117,7 @@ public class LetterController {
   @LetterTypeValidation
   @DeleteMapping("/{type}/{letterId}")
   public ResponseDto deleteLetter(
-      @PathVariable @NotBlank(message = LetterConstants.LETTER_TYPE_NULL) LetterType type,
+      @PathVariable @NotNull(message = LetterConstants.LETTER_TYPE_NULL) LetterType type,
       @PathVariable @NotNull(message = LetterConstants.LETTER_ID_NULL) int letterId,
       HttpSession session
   ) {

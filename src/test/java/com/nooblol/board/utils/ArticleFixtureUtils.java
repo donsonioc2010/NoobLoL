@@ -21,7 +21,7 @@ public class ArticleFixtureUtils {
         .articleTitle("Sample Article Title")
         .articleContent("Sample Article Content")
         .articleReadCount(5)
-        .status(ArticleStatusEnum.ACTIVE.getStatus())
+        .status(ArticleStatus.ACTIVE)
         .createdUserId(createdUserId)
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -43,7 +43,7 @@ public class ArticleFixtureUtils {
         .articleTitle("Sample Article Title")
         .articleContent("Sample Article Content")
         .articleReadCount(6)
-        .status(ArticleStatusEnum.ACTIVE.getStatus())
+        .status(ArticleStatus.ACTIVE)
         .createdUserId(createdUserId)
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -65,7 +65,7 @@ public class ArticleFixtureUtils {
         .articleTitle("Sample Article Title")
         .articleContent("Sample Article Content")
         .articleReadCount(9)
-        .status(ArticleStatusEnum.ACTIVE.getStatus())
+        .status(ArticleStatus.ACTIVE)
         .createdUserId(createdUserId)
         .createdAt(LocalDateTime.now())
         .updatedAt(LocalDateTime.now())
@@ -79,7 +79,7 @@ public class ArticleFixtureUtils {
     result.setBbsId(1);
     result.setArticleTitle("Sample Article Title");
     result.setArticleContent("Sample Article Content");
-    result.setStatus(ArticleStatusEnum.ACTIVE.getStatus());
+    result.setStatus(ArticleStatus.ACTIVE);
     result.setCreatedUserId(createdUserId);
     return result;
   }

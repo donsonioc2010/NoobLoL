@@ -19,14 +19,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nooblol.board.dto.BbsDto;
-import com.nooblol.board.dto.BbsRequestDto.BbsInsertDto;
-import com.nooblol.board.dto.BbsRequestDto.BbsUpdateDto;
+import com.nooblol.board.dto.BbsInsertDto;
+import com.nooblol.board.dto.BbsUpdateDto;
 import com.nooblol.board.dto.CategoryDto;
-import com.nooblol.board.dto.CategoryRequestDto.CategoryInsertDto;
-import com.nooblol.board.dto.CategoryRequestDto.CategoryUpdateDto;
+import com.nooblol.board.dto.CategoryInsertDto;
+import com.nooblol.board.dto.CategoryUpdateDto;
 import com.nooblol.board.service.CategoryService;
 import com.nooblol.board.utils.BoardFixtureUtils;
-import com.nooblol.board.utils.BoardStatusEnum;
+import com.nooblol.board.utils.BoardStatus;
+import com.nooblol.board.utils.CategoryStatus;
 import com.nooblol.global.utils.DocumentSnippetsUtils;
 import com.nooblol.global.utils.RestDocConfiguration;
 import com.nooblol.global.utils.SessionSampleObject;
@@ -77,20 +78,20 @@ class BoardControllerTest {
     @DisplayName("카테고리 리스트 조회요청시, 상태값으로 OK와 카테고리 리스트를 획득한다")
     void getCategoryList_WhenRequest_ThenReturnOkAndCategoryList() throws Exception {
       //given
-      int status = BoardStatusEnum.ACTIVE.getStatus();
+      int status = BoardStatus.ACTIVE.getStatus();
 
       CategoryDto categoryDto1 = new CategoryDto().builder().categoryId(1).categoryName("sample1")
-          .status(BoardStatusEnum.ACTIVE.getStatus()).createdUserId("test")
+          .status(CategoryStatus.ACTIVE).createdUserId("test")
           .createdAt(LocalDateTime.now()).updatedUserId("test").updatedAt(LocalDateTime.now())
           .build();
 
       CategoryDto categoryDto2 = new CategoryDto().builder().categoryId(2).categoryName("sample2")
-          .status(BoardStatusEnum.ACTIVE.getStatus()).createdUserId("test")
+          .status(CategoryStatus.ACTIVE).createdUserId("test")
           .createdAt(LocalDateTime.now()).updatedUserId("test").updatedAt(LocalDateTime.now())
           .build();
 
       CategoryDto categoryDto3 = new CategoryDto().builder().categoryId(3).categoryName("sample3")
-          .status(BoardStatusEnum.ACTIVE.getStatus()).createdUserId("test")
+          .status(CategoryStatus.ACTIVE).createdUserId("test")
           .createdAt(LocalDateTime.now()).updatedUserId("test").updatedAt(LocalDateTime.now())
           .build();
 
@@ -121,7 +122,7 @@ class BoardControllerTest {
                           .description("카테고리ID"),
                       fieldWithPath("result[].categoryName").type(JsonFieldType.STRING)
                           .description("카테고리 명"),
-                      fieldWithPath("result[].status").type(JsonFieldType.NUMBER)
+                      fieldWithPath("result[].status").type(JsonFieldType.STRING)
                           .description("해당 카테고리 사용방법 상태"),
                       fieldWithPath("result[].createdUserId").type(JsonFieldType.STRING)
                           .description("생성한 관리자 ID"),
@@ -141,7 +142,7 @@ class BoardControllerTest {
       MockHttpSession adminSession = (MockHttpSession) SessionSampleObject.adminUserLoginSession;
 
       CategoryInsertDto requestDto = new CategoryInsertDto().builder()
-          .categoryName("Sample Add Category").status(BoardStatusEnum.ACTIVE.getStatus())
+          .categoryName("Sample Add Category").status(CategoryStatus.ACTIVE)
           .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
 
       //mock
@@ -156,7 +157,7 @@ class BoardControllerTest {
           .andExpect(jsonPath("$.result", Is.is(true))).andDo(document("board/category/add",
               DocumentSnippetsUtils.requestHeaders_ContentTypeApplicationJsonValue(), requestFields(
                   fieldWithPath("categoryName").type(JsonFieldType.STRING).description("생성할 카테고리 명"),
-                  fieldWithPath("status").type(JsonFieldType.NUMBER)
+                  fieldWithPath("status").type(JsonFieldType.STRING)
                       .description("생성할 카테고리의 게시판 사용 상태값"),
                   fieldWithPath("createdUserId").type(JsonFieldType.NULL).ignored(),
                   fieldWithPath("createdAt").type(JsonFieldType.NULL).ignored(),
@@ -172,7 +173,7 @@ class BoardControllerTest {
       //given
       int categoryId = 1;
       CategoryUpdateDto requestDto = new CategoryUpdateDto().builder().categoryId(categoryId)
-          .newCategoryName("Sample Update CategoryName").status(BoardStatusEnum.ACTIVE.getStatus())
+          .newCategoryName("Sample Update CategoryName").status(CategoryStatus.ACTIVE)
           .build();
 
       MockHttpSession session = (MockHttpSession) SessionSampleObject.adminUserLoginSession;
@@ -197,7 +198,7 @@ class BoardControllerTest {
                           .description("수정을 하고자 하는 카테고리 ID"),
                       fieldWithPath("newCategoryName").type(JsonFieldType.STRING)
                           .description("변경하려는 카테고리 이름"),
-                      fieldWithPath("status").type(JsonFieldType.NUMBER).description("변경하려는 상태"),
+                      fieldWithPath("status").type(JsonFieldType.STRING).description("변경하려는 상태"),
                       fieldWithPath("createdAt").ignored(),
                       fieldWithPath("updatedAt").ignored(),
                       fieldWithPath("createdUserId").ignored(),
@@ -252,7 +253,7 @@ class BoardControllerTest {
           fieldWithPath("result[].categoryId").type(JsonFieldType.NUMBER)
               .description("해당 게시판의 카테고리ID"),
           fieldWithPath("result[].bbsName").type(JsonFieldType.STRING).description("게시판 명"),
-          fieldWithPath("result[].status").type(JsonFieldType.NUMBER).description("게시판의 사용 방식 상태값"),
+          fieldWithPath("result[].status").type(JsonFieldType.STRING).description("게시판의 사용 방식 상태값"),
           fieldWithPath("result[].createdUserId").type(JsonFieldType.STRING)
               .description("생성한 관리자 ID"),
           fieldWithPath("result[].createdAt").type(JsonFieldType.STRING).description("게시판 생성일"),
@@ -267,20 +268,20 @@ class BoardControllerTest {
     void getBbsList_WhenGivenCategoryId_ThenReturnOkAndBbsList() throws Exception {
       //given
       int categoryId = 1;
-      int status = BoardStatusEnum.ACTIVE.getStatus();
+      BoardStatus status = BoardStatus.ACTIVE;
       String userId = SessionUtils.getSessionUserId(SessionSampleObject.adminUserLoginSession);
 
       List<BbsDto> responseList = BoardFixtureUtils.BbsListFixtureByCategoryIdAndStatusAndUserID(
           categoryId, status, userId);
 
       //mock
-      when(categoryService.getBbsList(categoryId, status)).thenReturn(responseList);
+      when(categoryService.getBbsList(categoryId, status.getStatus())).thenReturn(responseList);
 
       //when & then
       mockMvc.perform(
               MockMvcRequestBuilders.get("/board/bbsList")
                   .param("categoryId", String.valueOf(categoryId))
-                  .param("status", String.valueOf(status)))
+                  .param("status", status.getStatus() + ""))
           .andExpect(status().isOk())
           .andExpect(jsonPath("$.resultCode", Is.is(HttpStatus.OK.value())))
           .andDo(
@@ -324,7 +325,7 @@ class BoardControllerTest {
       BbsInsertDto requestDto = new BbsInsertDto().builder()
           .categoryId(1)
           .bbsName("Sample Insert BbsName")
-          .status(BoardStatusEnum.ACTIVE.getStatus())
+          .status(BoardStatus.ACTIVE)
           .build();
 
       //mock
@@ -369,7 +370,7 @@ class BoardControllerTest {
           .bbsId(1)
           .categoryId(1)
           .bbsName("Sample BbsUpdate Name")
-          .status(BoardStatusEnum.ACTIVE.getStatus())
+          .status(BoardStatus.ACTIVE)
           .build();
 
       //mock
@@ -396,7 +397,7 @@ class BoardControllerTest {
                           .description("변경하고자 하는 카테고리 ID"),
                       fieldWithPath("bbsName").type(JsonFieldType.STRING)
                           .description("변경하고자 하는 게시판명"),
-                      fieldWithPath("status").type(JsonFieldType.NUMBER)
+                      fieldWithPath("status").type(JsonFieldType.STRING)
                           .description("변경하고자 하는 게시판 상태값"),
                       fieldWithPath("validUpdateData").type(JsonFieldType.BOOLEAN)
                           .description("카테고리ID, 게시판명, 상태값 전부 변경사항이 없는 경우 변경이 불가능하다."),

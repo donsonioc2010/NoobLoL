@@ -22,6 +22,8 @@ import com.nooblol.user.dto.LetterInsertRequestDto;
 import com.nooblol.user.mapper.LetterMapper;
 import com.nooblol.user.service.LetterService;
 import com.nooblol.user.utils.LetterConstants;
+import com.nooblol.user.utils.LetterStatus;
+import com.nooblol.user.utils.LetterType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +78,8 @@ class LetterControllerTest {
                 .letterContent("Sample Letter Content")
                 .toUserId("testUserId")
                 .fromUserId(SessionUtils.getSessionUserId(reqSession))
-                .toStatus(LetterConstants.LETTER_STATUS_READ)
-                .fromStatus(LetterConstants.LETTER_STATUS_READ)
+                .toStatus(LetterStatus.READ)
+                .fromStatus(LetterStatus.READ)
                 .createdAt(LocalDateTime.now())
                 .build()
         );
@@ -108,11 +110,11 @@ class LetterControllerTest {
                         .description("쪽지 내용"),
                     fieldWithPath("result.toUserId").type(JsonFieldType.STRING)
                         .description("쪽지 수신자"),
-                    fieldWithPath("result.toStatus").type(JsonFieldType.NUMBER)
+                    fieldWithPath("result.toStatus").type(JsonFieldType.STRING)
                         .description("수신자의 쪽지 상태"),
                     fieldWithPath("result.fromUserId").type(JsonFieldType.STRING)
                         .description("쪽지 발신자"),
-                    fieldWithPath("result.fromStatus").type(JsonFieldType.NUMBER)
+                    fieldWithPath("result.fromStatus").type(JsonFieldType.STRING)
                         .description("발신자의 쪽지 상태"),
                     fieldWithPath("result.createdAt").type(JsonFieldType.STRING)
                         .description("쪽지 발신일")
@@ -127,7 +129,7 @@ class LetterControllerTest {
     //given
     MockHttpSession reqSession = (MockHttpSession) SessionSampleObject.authUserLoginSession;
 
-    String type = LetterConstants.LETTER_TYPE_FROM;
+    String type = LetterType.FROM.name();
     int page = 1;
     int limit = 30;
 
@@ -141,8 +143,8 @@ class LetterControllerTest {
               .letterContent("Sample Letter Content" + i)
               .toUserId("testUserId")
               .fromUserId(SessionUtils.getSessionUserId(reqSession))
-              .toStatus(LetterConstants.LETTER_STATUS_READ)
-              .fromStatus(LetterConstants.LETTER_STATUS_READ)
+              .toStatus(LetterStatus.READ)
+              .fromStatus(LetterStatus.READ)
               .createdAt(LocalDateTime.now())
               .build()
       );
@@ -183,11 +185,11 @@ class LetterControllerTest {
                         .description("쪽지 내용"),
                     fieldWithPath("result[].toUserId").type(JsonFieldType.STRING)
                         .description("쪽지 수신자"),
-                    fieldWithPath("result[].toStatus").type(JsonFieldType.NUMBER)
+                    fieldWithPath("result[].toStatus").type(JsonFieldType.STRING)
                         .description("수신자의 쪽지 상태"),
                     fieldWithPath("result[].fromUserId").type(JsonFieldType.STRING)
                         .description("쪽지 발신자"),
-                    fieldWithPath("result[].fromStatus").type(JsonFieldType.NUMBER)
+                    fieldWithPath("result[].fromStatus").type(JsonFieldType.STRING)
                         .description("발신자의 쪽지 상태"),
                     fieldWithPath("result[].createdAt").type(JsonFieldType.STRING)
                         .description("쪽지 발신일")
@@ -243,7 +245,7 @@ class LetterControllerTest {
   void deleteLetter_WhenDeleteSuccess_ThenReturnTrueAndOk() throws Exception {
     //given
     int letterId = 1;
-    String type = LetterConstants.LETTER_TYPE_FROM;
+    String type = LetterType.FROM.name();
     MockHttpSession session = (MockHttpSession) SessionSampleObject.authUserLoginSession;
 
     //mock

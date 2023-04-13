@@ -24,6 +24,7 @@ import com.nooblol.board.dto.ArticleDto;
 import com.nooblol.board.dto.ArticleInsertRequestDto;
 import com.nooblol.board.dto.LikeAndNotLikeResponseDto;
 import com.nooblol.board.service.ArticleService;
+import com.nooblol.board.service.ArticleStatusService;
 import com.nooblol.board.utils.ArticleFixtureUtils;
 import com.nooblol.global.utils.ApiDocumentUtils;
 import com.nooblol.global.utils.ResponseEnum;
@@ -59,7 +60,6 @@ class ArticleControllerTest {
 
   @MockBean
   ArticleService articleService;
-
   @Autowired
   ObjectMapper objectMapper;
 
@@ -80,9 +80,8 @@ class ArticleControllerTest {
             ArticleFixtureUtils.insertArticleFixture(SessionUtils.getSessionUserId(session));
 
         //mock
-        when(articleService.getNewArticleId()).thenReturn(1);
         when(
-            articleService.upsertArticle(any(), any(HttpSession.class), anyBoolean())
+            articleService.insertArticle(any())
         ).thenReturn(true);
 
         //then & when
@@ -271,106 +270,6 @@ class ArticleControllerTest {
       }
     }
 
-  }
-
-  @Nested
-  @DisplayName("게시물 추천, 비추천 테스트 케이스")
-  class ArticleStatusTest {
-
-    @Test
-    @DisplayName("게시물의 추천과 비추천의 갯수를 조회할 때, articleId가 존재하는 경우 각각 두개의 상태에 대한 갯수를 획득한다.")
-    void getLikeAndNotLikeArticle_WhenIsExistsArticleId_ThenReturnLikeAndNotLikeResponseDto()
-        throws Exception {
-      //given
-      int articleId = 1;
-      LikeAndNotLikeResponseDto likeAndNotLikeResponseDto = new LikeAndNotLikeResponseDto().builder()
-          .likeCnt(5)
-          .notLikeCnt(4)
-          .build();
-
-      //mock
-      when(articleService.likeAndNotListStatus(articleId)).thenReturn(likeAndNotLikeResponseDto);
-
-      //when & then
-      mockMvc.perform(
-              RestDocumentationRequestBuilders.get("/article/status/{articleId}", articleId)
-          ).andExpect(status().isOk())
-          .andExpect(jsonPath("$.resultCode", Is.is(HttpStatus.OK.value())))
-          .andDo(document("article/status/getLikeAndNotLike",
-                  pathParameters(
-                      parameterWithName("articleId").description("존재하는 Article(게시물) ID")
-                  ),
-                  responseHeaders(
-                      headerWithName(HttpHeaders.CONTENT_TYPE)
-                          .description(MediaType.APPLICATION_JSON_VALUE)
-                  ),
-                  responseFields(
-                      fieldWithPath("resultCode").type(int.class).description("실행 결과의 상태값"),
-                      fieldWithPath("result.likeCnt").type(int.class).description("해당 Article의 추천 수"),
-                      fieldWithPath("result.notLikeCnt").type(int.class)
-                          .description("해당 Article의 비추천 수")
-                  )
-              )
-          );
-    }
-
-    @Test
-    @DisplayName("게시물에 대한 추천을 할 경우, 이전에 추천 또는 비추천에 대한 기록이 없는 경우, Ok상태값과 true를 결과값으로 획득한다")
-    void likeArticle_WhenIsNotExistsLikeOrNotLikeHistory_ThenReturnOkAndTrue() throws Exception {
-      //given
-      int articleId = 1;
-      MockHttpSession session = (MockHttpSession) SessionSampleObject.authUserLoginSession;
-
-      //mock
-      when(articleService.likeArticle(articleId, (HttpSession) session)).thenReturn(true);
-
-      //when & then
-      mockMvc.perform(
-              RestDocumentationRequestBuilders.post(
-                  "/article/like/{articleId}", articleId).session(session)
-          ).andExpect(status().isOk())
-          .andExpect(jsonPath("$.resultCode", Is.is(HttpStatus.OK.value())))
-          .andExpect(jsonPath("$.result", Is.is(true)))
-          .andDo(getStatusDocument("article/status/like")
-          );
-    }
-
-    @Test
-    @DisplayName("게시물에 대한 비추천을 할 경우, 이전에 추천 또는 비추천에 대한 기록이 없는 경우, Ok상태값과 true를 결과값으로 획득한다")
-    void NotLikeArticle_WhenIsNotExistsLikeOrNotLikeHistory_ThenReturnOkAndTrue() throws Exception {
-      //given
-      int articleId = 1;
-      MockHttpSession session = (MockHttpSession) SessionSampleObject.authUserLoginSession;
-
-      //mock
-      when(articleService.notLikeArticle(articleId, (HttpSession) session)).thenReturn(true);
-
-      //when & then
-      mockMvc.perform(
-              RestDocumentationRequestBuilders.post(
-                  "/article/notLike/{articleId}", articleId).session(session)
-          ).andExpect(status().isOk())
-          .andExpect(jsonPath("$.resultCode", Is.is(HttpStatus.OK.value())))
-          .andExpect(jsonPath("$.result", Is.is(true)))
-          .andDo(getStatusDocument("article/status/notLike")
-          );
-    }
-
-    private RestDocumentationResultHandler getStatusDocument(String docsPathValue) {
-      return document(
-          docsPathValue,
-          pathParameters(
-              parameterWithName("articleId").description("존재하는 Article(게시물) ID")
-          ), responseHeaders(
-              headerWithName(HttpHeaders.CONTENT_TYPE)
-                  .description(MediaType.APPLICATION_JSON_VALUE)
-          ),
-          responseFields(
-              fieldWithPath("resultCode").type(int.class).description("실행 결과의 상태값"),
-              fieldWithPath("result").type(boolean.class).description("실행 성공 유무")
-          )
-      );
-    }
   }
 
 }
