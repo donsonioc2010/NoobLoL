@@ -12,12 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 public class LocalCacheConfig {
 
-  @Bean
-  public CacheManager cacheManager() {
-    SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
-    simpleCacheManager.setCaches(
-        List.of(new ConcurrentMapCache("category"), new ConcurrentMapCache("bbs"),
-            new ConcurrentMapCache("allBbs")));
-    return simpleCacheManager;
-  }
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
+        simpleCacheManager.setCaches(
+                List.of(
+                        new ConcurrentMapCache("category"),
+                        new ConcurrentMapCache("bbs"),
+                        new ConcurrentMapCache("allBbs")));
+        return simpleCacheManager;
+    }
 }

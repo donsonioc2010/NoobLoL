@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum SessionEnum {
-  USER_LOGIN("USER_LOGIN");
+    USER_LOGIN("USER_LOGIN");
 
-  String value;
+    String value;
 
-  SessionEnum(String value) {
-    this.value = value;
-  }
+    SessionEnum(String value) {
+        this.value = value;
+    }
 }

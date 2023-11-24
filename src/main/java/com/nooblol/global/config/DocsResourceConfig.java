@@ -1,11 +1,8 @@
 package com.nooblol.global.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /*
 현재 throw-exception-if-no-handler-found , add-mappings에 대해서 설정을 비활성화? 해야하는 상황이다.
@@ -22,14 +19,13 @@ https://tecoble.techcourse.co.kr/post/2021-11-24-spring-customize-unhandled-api/
 @Configuration
 public class DocsResourceConfig extends WebMvcConfigurationSupport {
 
-  @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry) {
-    registry.addResourceHandler("/docs/**")
-        //.addResourceLocations("classpath:/static/docs/");
-        .addResourceLocations("classpath:/static/docs/");
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/docs/**")
+                // .addResourceLocations("classpath:/static/docs/");
+                .addResourceLocations("classpath:/static/docs/");
 
-    registry.addResourceHandler("index.html")
-        .addResourceLocations("classpath:/static/docs/");
-  }
-
+        registry.addResourceHandler("index.html").addResourceLocations("classpath:/static/docs/");
+    }
 }

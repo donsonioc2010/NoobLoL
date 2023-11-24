@@ -6,17 +6,18 @@ import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfi
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
-
 /*
 Reference : https://techblog.woowahan.com/2597/
  */
 @TestConfiguration
 public class RestDocConfiguration {
 
-  @Bean
-  public RestDocsMockMvcConfigurationCustomizer restDocsMockMvcConfigurationCustomizer() {
-    return configurer -> configurer.operationPreprocessors()
-        .withRequestDefaults(prettyPrint())
-        .withResponseDefaults(prettyPrint());
-  }
+    @Bean
+    public RestDocsMockMvcConfigurationCustomizer restDocsMockMvcConfigurationCustomizer() {
+        return configurer ->
+                configurer
+                        .operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())
+                        .withResponseDefaults(prettyPrint());
+    }
 }

@@ -8,15 +8,15 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface LetterMapper {
 
-  int insertLetter(LetterDto letterDto);
+    int insertLetter(LetterDto letterDto);
 
-  LetterDto selectLetterByLetterId(int letterId);
+    LetterDto selectLetterByLetterId(int letterId);
 
-  List<LetterDto> selectLetterListByUserIdAndTypeTo(LetterSearchDto letterSearchDto);
+    List<LetterDto> selectLetterListByUserIdAndTypeTo(LetterSearchDto letterSearchDto);
 
-  List<LetterDto> selectLetterListByUserIdAndTypeFrom(LetterSearchDto letterSearchDto);
+    List<LetterDto> selectLetterListByUserIdAndTypeFrom(LetterSearchDto letterSearchDto);
 
-  int updateLetterToStatusByLetterIdAndToUserId(LetterDto letterDto);
+    int updateLetterToStatusByLetterIdAndToUserId(LetterDto letterDto);
 
-  int updateLetterFromStatusByLetterIdAndFromUserId(LetterDto letterDto);
+    int updateLetterFromStatusByLetterIdAndFromUserId(LetterDto letterDto);
 }

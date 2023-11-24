@@ -9,11 +9,11 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface AdminMapper {
 
-  UserDto selectAdminDto(AdminUserDto adminDto);
+    UserDto selectAdminDto(AdminUserDto adminDto);
 
-  List<UserDto> getAllUserList(@Param("pageNum") int pageNum, @Param("limitNum") int limitNum);
+    List<UserDto> getAllUserList(@Param("pageNum") int pageNum, @Param("limitNum") int limitNum);
 
-  int forcedDeleteUser(String deleteUserId);
+    int forcedDeleteUser(String deleteUserId);
 
-  int changeUserRole(UserDto userDto);
+    int changeUserRole(UserDto userDto);
 }

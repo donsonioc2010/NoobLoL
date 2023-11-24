@@ -8,9 +8,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserInfoMapper {
 
-  int updateUserInfo(UserInfoUpdateDto userInfoUpdateDto);
+    int updateUserInfo(UserInfoUpdateDto userInfoUpdateDto);
 
-  UserDto selectUser(UserLoginDto userLoginDto);
+    UserDto selectUser(UserLoginDto userLoginDto);
 
-  UserDto selectUserByUserId(String userId);
+    UserDto selectUserByUserId(String userId);
 }

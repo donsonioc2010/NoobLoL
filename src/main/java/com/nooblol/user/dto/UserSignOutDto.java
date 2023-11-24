@@ -12,10 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserSignOutDto {
 
-  @NotBlank(message = "UserId가 입력되지 않았습니다.")
-  private String userId;
+    @NotBlank(message = "UserId가 입력되지 않았습니다.")
+    private String userId;
 
-  @NotBlank(message = "패스워드가 입력되지 않았습니다.")
-  private String password;
-
+    @NotBlank(message = "패스워드가 입력되지 않았습니다.")
+    private String password;
 }

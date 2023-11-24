@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserSignOutMapper {
 
-  int selectUserCount(UserSignOutDto userSignOutDto);
+    int selectUserCount(UserSignOutDto userSignOutDto);
 
-  int deleteUser(UserSignOutDto userSignOutDto);
+    int deleteUser(UserSignOutDto userSignOutDto);
 }

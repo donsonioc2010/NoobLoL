@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LikeAndNotLikeResponseDto {
 
-  private int likeCnt;
-  private int notLikeCnt;
-
+    private int likeCnt;
+    private int notLikeCnt;
 }

@@ -8,12 +8,12 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SummonerHistoryMapper {
 
-  List<SummonerHistoryDto> selectSummonerHistoryById(String id);
+    List<SummonerHistoryDto> selectSummonerHistoryById(String id);
 
-  SummonerHistoryDto selectSummonerHistoryByLeagueAndId(@Param("leagueId") String leagueId,
-      @Param("summonerId") String summonerId);
+    SummonerHistoryDto selectSummonerHistoryByLeagueAndId(
+            @Param("leagueId") String leagueId, @Param("summonerId") String summonerId);
 
-  int updateSummonerHistory(SummonerHistoryDto summonerHistoryDto);
+    int updateSummonerHistory(SummonerHistoryDto summonerHistoryDto);
 
-  int insertSummonerHistory(SummonerHistoryDto summonerHistoryDto);
+    int insertSummonerHistory(SummonerHistoryDto summonerHistoryDto);
 }

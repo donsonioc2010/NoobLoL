@@ -19,43 +19,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArticleStatusController {
 
-  private final ArticleStatusService articleStatusService;
+    private final ArticleStatusService articleStatusService;
 
-  /**
-   * 파라미터로 제공한 게시물의 추천, 비추천 갯수를 Return한다
-   *
-   * @param articleId
-   * @return
-   */
-  @GetMapping("/{articleId}")
-  public ResponseDto likeAndNotLikeArticle(@PathVariable int articleId) {
-    return ResponseUtils.makeToResponseOkDto(articleStatusService.likeAndNotListStatus(articleId));
-  }
+    /**
+     * 파라미터로 제공한 게시물의 추천, 비추천 갯수를 Return한다
+     *
+     * @param articleId
+     * @return
+     */
+    @GetMapping("/{articleId}")
+    public ResponseDto likeAndNotLikeArticle(@PathVariable int articleId) {
+        return ResponseUtils.makeToResponseOkDto(articleStatusService.likeAndNotListStatus(articleId));
+    }
 
-  /**
-   * 게시물 추천
-   *
-   * @param articleId
-   * @param session
-   * @return
-   */
-  @UserLoginCheck
-  @PostMapping("/like/{articleId}")
-  public ResponseDto likeArticle(@PathVariable int articleId, HttpSession session) {
-    return ResponseUtils.makeToResponseOkDto(articleStatusService.likeArticle(articleId, session));
-  }
+    /**
+     * 게시물 추천
+     *
+     * @param articleId
+     * @param session
+     * @return
+     */
+    @UserLoginCheck
+    @PostMapping("/like/{articleId}")
+    public ResponseDto likeArticle(@PathVariable int articleId, HttpSession session) {
+        return ResponseUtils.makeToResponseOkDto(articleStatusService.likeArticle(articleId, session));
+    }
 
-  /**
-   * 게시물 비추천
-   *
-   * @param articleId
-   * @param session
-   * @return
-   */
-  @UserLoginCheck
-  @PostMapping("/notLike/{articleId}")
-  public ResponseDto notLikeArticle(@PathVariable int articleId, HttpSession session) {
-    return ResponseUtils.makeToResponseOkDto(
-        articleStatusService.notLikeArticle(articleId, session));
-  }
+    /**
+     * 게시물 비추천
+     *
+     * @param articleId
+     * @param session
+     * @return
+     */
+    @UserLoginCheck
+    @PostMapping("/notLike/{articleId}")
+    public ResponseDto notLikeArticle(@PathVariable int articleId, HttpSession session) {
+        return ResponseUtils.makeToResponseOkDto(
+                articleStatusService.notLikeArticle(articleId, session));
+    }
 }

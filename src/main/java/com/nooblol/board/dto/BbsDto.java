@@ -15,13 +15,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BbsDto {
 
-  private int bbsId;
-  private int categoryId;
-  private String bbsName;
-  private BoardStatus status;
-  private String createdUserId;
-  private LocalDateTime createdAt;
-  private String updatedUserId;
-  private LocalDateTime updatedAt;
-
+    private int bbsId;
+    private int categoryId;
+    private String bbsName;
+    private BoardStatus status;
+    private String createdUserId;
+    private LocalDateTime createdAt;
+    private String updatedUserId;
+    private LocalDateTime updatedAt;
 }

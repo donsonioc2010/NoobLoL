@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SearchBbsListDto {
 
-  private int categoryId;
-  private int status;
-
+    private int categoryId;
+    private int status;
 }

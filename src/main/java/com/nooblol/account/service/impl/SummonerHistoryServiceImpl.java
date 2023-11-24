@@ -27,111 +27,108 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class SummonerHistoryServiceImpl implements SummonerHistoryService {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private final RiotConfiguration riotConfiguration;
-  private final SummonerHistoryMapper summonerHistoryMapper;
+    private final RiotConfiguration riotConfiguration;
+    private final SummonerHistoryMapper summonerHistoryMapper;
 
-  private final ObjectMapper objectMapper;
-  private final RestTemplate restTemplate;
-  private final HttpHeaders initRiotHeader;
+    private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
+    private final HttpHeaders initRiotHeader;
 
-  @Override
-  public ResponseDto getSummonerHistoryInfo(String summonerId, boolean sync) {
-    if (StringUtils.isBlank(summonerId)) {
-      throw new IllegalArgumentException("summonerId가 입력되지 않았습니다.");
-    }
-    return summonerHistoryProcess(summonerId, sync);
-  }
-
-  ResponseDto summonerHistoryProcess(String summonerId, boolean sync) {
-    ResponseDto responseDto = null;
-    if (sync) {
-      List<SummonerHistoryDto> dbSummonerHistoryList =
-          summonerHistoryMapper.selectSummonerHistoryById(summonerId);
-      if (!dbSummonerHistoryList.isEmpty()) {
-        return new ResponseDto(HttpStatus.OK.value(), dbSummonerHistoryList);
-      }
+    @Override
+    public ResponseDto getSummonerHistoryInfo(String summonerId, boolean sync) {
+        if (StringUtils.isBlank(summonerId)) {
+            throw new IllegalArgumentException("summonerId가 입력되지 않았습니다.");
+        }
+        return summonerHistoryProcess(summonerId, sync);
     }
 
-    responseDto = selSummonerHistoryByRiot(summonerId);
-    summonerHistoryDBProcess(responseDto);
-    return responseDto;
-  }
+    ResponseDto summonerHistoryProcess(String summonerId, boolean sync) {
+        ResponseDto responseDto = null;
+        if (sync) {
+            List<SummonerHistoryDto> dbSummonerHistoryList =
+                    summonerHistoryMapper.selectSummonerHistoryById(summonerId);
+            if (!dbSummonerHistoryList.isEmpty()) {
+                return new ResponseDto(HttpStatus.OK.value(), dbSummonerHistoryList);
+            }
+        }
 
-  public ResponseDto selSummonerHistoryByRiot(String summonerId) {
-    ResponseDto rtnDto = null;
-    String url =
-        riotConfiguration.getSummonerDomain()
-            + riotConfiguration.getSummonerHistorySearchBySummonerIdApi()
-            + summonerId;
-    try {
-      ResponseEntity response = getApiResponseData(url);
-      rtnDto = makeResponseToDto(response);
-    } catch (IOException e) {
-      log.error(e.getMessage());
-    } catch (Exception e) {
-      log.error(e.getMessage());
-    } finally {
-      if (ObjectUtils.isEmpty(rtnDto)) {
-        rtnDto = new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-      }
+        responseDto = selSummonerHistoryByRiot(summonerId);
+        summonerHistoryDBProcess(responseDto);
+        return responseDto;
     }
-    return rtnDto;
-  }
 
-  private ResponseEntity getApiResponseData(String url) throws IOException {
-    return restTemplate.exchange(
-        url, HttpMethod.GET, new HttpEntity<String>(initRiotHeader), String.class
-    );
-  }
-
-  private ResponseDto makeResponseToDto(ResponseEntity response) throws IOException {
-    HttpStatus sameStatus = HttpStatus.valueOf(response.getStatusCode().value());
-    if (sameStatus == HttpStatus.OK) {
-      return new ResponseDto(sameStatus.value(), getResponseBodyToDto(response));
+    public ResponseDto selSummonerHistoryByRiot(String summonerId) {
+        ResponseDto rtnDto = null;
+        String url =
+                riotConfiguration.getSummonerDomain()
+                        + riotConfiguration.getSummonerHistorySearchBySummonerIdApi()
+                        + summonerId;
+        try {
+            ResponseEntity response = getApiResponseData(url);
+            rtnDto = makeResponseToDto(response);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (ObjectUtils.isEmpty(rtnDto)) {
+                rtnDto = new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
+            }
+        }
+        return rtnDto;
     }
-    if (sameStatus != null) {
-      return new ResponseDto(sameStatus.value(), sameStatus);
+
+    private ResponseEntity getApiResponseData(String url) throws IOException {
+        return restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<String>(initRiotHeader), String.class);
     }
-    return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-  }
 
-  private ArrayList<SummonerHistoryDto> getResponseBodyToDto(ResponseEntity response)
-      throws IOException {
-    String body = response.getBody().toString();
-
-    return objectMapper.readValue(body, new TypeReference<ArrayList<SummonerHistoryDto>>() {
-    });
-  }
-
-  private void summonerHistoryDBProcess(ResponseDto responseDto) {
-    ArrayList<SummonerHistoryDto> summonerHistoryList =
-        (ArrayList<SummonerHistoryDto>) responseDto.getResult();
-
-    if (!summonerHistoryList.isEmpty()) {
-      summonerHistoryList.forEach(
-          summonerHistoryDto -> {
-            summonerHistoryDBHandle(summonerHistoryDto);
-          }
-      );
+    private ResponseDto makeResponseToDto(ResponseEntity response) throws IOException {
+        HttpStatus sameStatus = HttpStatus.valueOf(response.getStatusCode().value());
+        if (sameStatus == HttpStatus.OK) {
+            return new ResponseDto(sameStatus.value(), getResponseBodyToDto(response));
+        }
+        if (sameStatus != null) {
+            return new ResponseDto(sameStatus.value(), sameStatus);
+        }
+        return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
     }
-  }
 
-  private void summonerHistoryDBHandle(SummonerHistoryDto summonerHistoryDto) {
-    String leagueId = summonerHistoryDto.getLeagueId();
-    String summonerId = summonerHistoryDto.getSummonerId();
+    private ArrayList<SummonerHistoryDto> getResponseBodyToDto(ResponseEntity response)
+            throws IOException {
+        String body = response.getBody().toString();
 
-    if (StringUtils.isBlank(leagueId) || StringUtils.isBlank(summonerId)) {
-      throw new IllegalArgumentException("LeagueId or Summoner ID Is Null");
+        return objectMapper.readValue(body, new TypeReference<ArrayList<SummonerHistoryDto>>() {});
     }
-    SummonerHistoryDto existDataByDB =
-        summonerHistoryMapper.selectSummonerHistoryByLeagueAndId(leagueId, summonerId);
 
-    if (!ObjectUtils.isEmpty(existDataByDB)) {
-      summonerHistoryMapper.updateSummonerHistory(summonerHistoryDto);
-    } else {
-      summonerHistoryMapper.insertSummonerHistory(summonerHistoryDto);
+    private void summonerHistoryDBProcess(ResponseDto responseDto) {
+        ArrayList<SummonerHistoryDto> summonerHistoryList =
+                (ArrayList<SummonerHistoryDto>) responseDto.getResult();
+
+        if (!summonerHistoryList.isEmpty()) {
+            summonerHistoryList.forEach(
+                    summonerHistoryDto -> {
+                        summonerHistoryDBHandle(summonerHistoryDto);
+                    });
+        }
     }
-  }
+
+    private void summonerHistoryDBHandle(SummonerHistoryDto summonerHistoryDto) {
+        String leagueId = summonerHistoryDto.getLeagueId();
+        String summonerId = summonerHistoryDto.getSummonerId();
+
+        if (StringUtils.isBlank(leagueId) || StringUtils.isBlank(summonerId)) {
+            throw new IllegalArgumentException("LeagueId or Summoner ID Is Null");
+        }
+        SummonerHistoryDto existDataByDB =
+                summonerHistoryMapper.selectSummonerHistoryByLeagueAndId(leagueId, summonerId);
+
+        if (!ObjectUtils.isEmpty(existDataByDB)) {
+            summonerHistoryMapper.updateSummonerHistory(summonerHistoryDto);
+        } else {
+            summonerHistoryMapper.insertSummonerHistory(summonerHistoryDto);
+        }
+    }
 }

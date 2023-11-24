@@ -17,21 +17,27 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BbsInsertDto extends BbsRequestDto {
 
-  @NotNull(message = ArticleMessage.CATEGORY_ID_NULL)
-  private Integer categoryId;
+    @NotNull(message = ArticleMessage.CATEGORY_ID_NULL)
+    private Integer categoryId;
 
-  @NotBlank(message = ArticleMessage.BBS_NAME_NULL)
-  private String bbsName;
+    @NotBlank(message = ArticleMessage.BBS_NAME_NULL)
+    private String bbsName;
 
-  @NotNull(message = ArticleMessage.BBS_STATUS_NULL)
-  private BoardStatus status;
+    @NotNull(message = ArticleMessage.BBS_STATUS_NULL)
+    private BoardStatus status;
 
-  @Builder
-  public BbsInsertDto(String createdUserId, LocalDateTime createdAt, String updatedUserId,
-      LocalDateTime updatedAt, Integer categoryId, String bbsName, BoardStatus status) {
-    super(createdUserId, createdAt, updatedUserId, updatedAt);
-    this.categoryId = categoryId;
-    this.bbsName = bbsName;
-    this.status = status;
-  }
+    @Builder
+    public BbsInsertDto(
+            String createdUserId,
+            LocalDateTime createdAt,
+            String updatedUserId,
+            LocalDateTime updatedAt,
+            Integer categoryId,
+            String bbsName,
+            BoardStatus status) {
+        super(createdUserId, createdAt, updatedUserId, updatedAt);
+        this.categoryId = categoryId;
+        this.bbsName = bbsName;
+        this.status = status;
+    }
 }

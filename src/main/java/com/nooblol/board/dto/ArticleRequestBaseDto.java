@@ -1,6 +1,5 @@
 package com.nooblol.board.dto;
 
-
 import com.nooblol.board.utils.ArticleMessage;
 import com.nooblol.board.utils.ArticleStatus;
 import javax.validation.constraints.NotBlank;
@@ -16,15 +15,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ArticleRequestBaseDto {
 
-  @NotNull(message = ArticleMessage.BBS_ID_NULL)
-  private Integer bbsId;
+    @NotNull(message = ArticleMessage.BBS_ID_NULL)
+    private Integer bbsId;
 
-  @NotBlank(message = ArticleMessage.ARTICLE_TITLE_NULL)
-  private String articleTitle;
+    @NotBlank(message = ArticleMessage.ARTICLE_TITLE_NULL)
+    private String articleTitle;
 
-  @NotBlank(message = ArticleMessage.ARTICLE_CONTENT_NULL)
-  private String articleContent;
+    @NotBlank(message = ArticleMessage.ARTICLE_CONTENT_NULL)
+    private String articleContent;
 
-  @NotNull(message = ArticleMessage.ARTICLE_STATUS_NULL)
-  private ArticleStatus status;
+    @NotNull(message = ArticleMessage.ARTICLE_STATUS_NULL)
+    private ArticleStatus status;
 }

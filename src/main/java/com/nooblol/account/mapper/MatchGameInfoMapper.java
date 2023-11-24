@@ -10,15 +10,15 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MatchGameInfoMapper {
 
-  ArrayList<String> existsMatchIdListByMatch(String matchIdList);
+    ArrayList<String> existsMatchIdListByMatch(String matchIdList);
 
-  int insertMatchGameInfo(MatchGameInfoDto info);
+    int insertMatchGameInfo(MatchGameInfoDto info);
 
-  int insertMatchGameBans(List<TeamDto> teamList);
+    int insertMatchGameBans(List<TeamDto> teamList);
 
-  int insertMatchGameParticipants(MatchGameInfoDto info);
+    int insertMatchGameParticipants(MatchGameInfoDto info);
 
-  int insertMatchGameUseStatRunes(Map info);
+    int insertMatchGameUseStatRunes(Map info);
 
-  void insertMatchGameUseStyleRunes(Map infoMap);
+    void insertMatchGameUseStyleRunes(Map infoMap);
 }

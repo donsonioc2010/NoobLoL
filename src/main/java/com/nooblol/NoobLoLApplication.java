@@ -8,8 +8,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 public class NoobLoLApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(NoobLoLApplication.class, args);
-  }
-
+    public static void main(String[] args) {
+        SpringApplication.run(NoobLoLApplication.class, args);
+    }
 }

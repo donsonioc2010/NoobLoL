@@ -12,11 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BbsRequestDto {
 
-  private String createdUserId;
+    private String createdUserId;
 
-  private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-  private String updatedUserId;
+    private String updatedUserId;
 
-  private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

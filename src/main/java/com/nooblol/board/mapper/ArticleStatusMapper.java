@@ -7,12 +7,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ArticleStatusMapper {
 
-  ArticleStatusDto selectArticleStatusByArticleIdAndUserId(ArticleStatusDto articleStatusDto);
+    ArticleStatusDto selectArticleStatusByArticleIdAndUserId(ArticleStatusDto articleStatusDto);
 
-  LikeAndNotLikeResponseDto selectArticleAllStatusByArticleId(int articleId);
+    LikeAndNotLikeResponseDto selectArticleAllStatusByArticleId(int articleId);
 
-  int insertArticleStatus(ArticleStatusDto articleStatusDto);
+    int insertArticleStatus(ArticleStatusDto articleStatusDto);
 
-  int deleteArticleStatus(ArticleStatusDto articleStatusDto);
-
+    int deleteArticleStatus(ArticleStatusDto articleStatusDto);
 }

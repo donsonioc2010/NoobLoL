@@ -15,12 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CategoryDto {
 
-  private int categoryId;
-  private String categoryName;
-  private CategoryStatus status;
-  private String createdUserId;
-  private LocalDateTime createdAt;
-  private String updatedUserId;
-  private LocalDateTime updatedAt;
-
+    private int categoryId;
+    private String categoryName;
+    private CategoryStatus status;
+    private String createdUserId;
+    private LocalDateTime createdAt;
+    private String updatedUserId;
+    private LocalDateTime updatedAt;
 }

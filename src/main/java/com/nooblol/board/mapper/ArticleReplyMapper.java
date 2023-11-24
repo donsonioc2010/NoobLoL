@@ -7,18 +7,17 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ArticleReplyMapper {
 
-  int insertReply(ReplyDto insertDto);
+    int insertReply(ReplyDto insertDto);
 
-  int updateReply(ReplyDto updateDto);
+    int updateReply(ReplyDto updateDto);
 
-  String selectCreatedUserIdByReplyId(int replyId);
+    String selectCreatedUserIdByReplyId(int replyId);
 
-  int deleteReplyByReplyId(int replyId);
+    int deleteReplyByReplyId(int replyId);
 
-  int deleteReplyByArticleId(int articleId);
+    int deleteReplyByArticleId(int articleId);
 
-  ReplyDto selectReplyByReplyId(int replyId);
+    ReplyDto selectReplyByReplyId(int replyId);
 
-  ArrayList<ReplyDto> selectReplyListByArticleId(int articleId);
-
+    ArrayList<ReplyDto> selectReplyListByArticleId(int articleId);
 }

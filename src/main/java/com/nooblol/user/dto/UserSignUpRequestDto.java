@@ -1,10 +1,8 @@
 package com.nooblol.user.dto;
 
-import com.nooblol.user.utils.UserRoleStatus;
-import java.sql.Timestamp;
+import com.nooblol.global.utils.RegexConstants;
 import com.nooblol.user.utils.UserConstants;
 import com.nooblol.user.utils.UserRoleStatus;
-import com.nooblol.global.utils.RegexConstants;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.validation.constraints.NotBlank;
@@ -21,31 +19,31 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserSignUpRequestDto {
 
-  private String userId = UUID.randomUUID().toString();
+    private String userId = UUID.randomUUID().toString();
 
-  @NotBlank(message = UserConstants.USER_EMAIL_NULL)
-  @Pattern(regexp = RegexConstants.MAIL_REGEX, message = UserConstants.USER_EMAIL_NOT_REGEX)
-  private String userEmail;
+    @NotBlank(message = UserConstants.USER_EMAIL_NULL)
+    @Pattern(regexp = RegexConstants.MAIL_REGEX, message = UserConstants.USER_EMAIL_NOT_REGEX)
+    private String userEmail;
 
-  @NotBlank(message = UserConstants.USER_NAME_NULL)
-  private String userName;
+    @NotBlank(message = UserConstants.USER_NAME_NULL)
+    private String userName;
 
-  @NotBlank(message = UserConstants.USER_PASSWORD_NULL)
-  private String password;
+    @NotBlank(message = UserConstants.USER_PASSWORD_NULL)
+    private String password;
 
-  private int userRole = UserRoleStatus.UNAUTH_USER.getRoleValue();
+    private int userRole = UserRoleStatus.UNAUTH_USER.getRoleValue();
 
-  private LocalDateTime createdAt = LocalDateTime.now();
-  private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
-  public void setAdminUserRole() {
-    setUserRole(UserRoleStatus.ADMIN.getRoleValue());
-  }
+    public void setAdminUserRole() {
+        setUserRole(UserRoleStatus.ADMIN.getRoleValue());
+    }
 
-  @Builder
-  public UserSignUpRequestDto(String userEmail, String userName, String password) {
-    this.userEmail = userEmail;
-    this.userName = userName;
-    this.password = password;
-  }
+    @Builder
+    public UserSignUpRequestDto(String userEmail, String userName, String password) {
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.password = password;
+    }
 }

@@ -8,8 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 @Configuration
 public class WebConfig extends WebMvcConfigurationSupport {
 
-  @Override
-  protected void addFormatters(FormatterRegistry registry) {
-    registry.addConverterFactory(new EnumConvertFactoryUtils());
-  }
+    @Override
+    protected void addFormatters(FormatterRegistry registry) {
+        registry.addConverterFactory(new EnumConvertFactoryUtils());
+    }
 }

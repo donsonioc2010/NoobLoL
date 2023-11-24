@@ -6,11 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserSignUpMapper {
 
-  int insertSignUpUser(UserSignUpRequestDto userDto);
+    int insertSignUpUser(UserSignUpRequestDto userDto);
 
-  UserSignUpRequestDto selectUserInfoByEmail(String userEmail);
+    UserSignUpRequestDto selectUserInfoByEmail(String userEmail);
 
-  UserSignUpRequestDto selectUserInfoByUserId(String userId);
+    UserSignUpRequestDto selectUserInfoByUserId(String userId);
 
-  int updateUserRole(UserSignUpRequestDto userDto);
+    int updateUserRole(UserSignUpRequestDto userDto);
 }

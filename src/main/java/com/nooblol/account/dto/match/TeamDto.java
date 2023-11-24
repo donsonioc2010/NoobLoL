@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TeamDto {
 
-  private String matchId;
-  private List<MatchGameBansDto> bans;
+    private String matchId;
+    private List<MatchGameBansDto> bans;
 }

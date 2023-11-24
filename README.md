@@ -10,6 +10,12 @@ Noob-LoL Service
 
 ---
 
+## SpotLess
+- gradlew spotlessCheck : 정해진 컨벤션을 지키고 있는지 검사
+- gradlew spotlessApply : 파일에 코드 컨밴션을 적용
+
+---
+
 ## ERD
 
 문서

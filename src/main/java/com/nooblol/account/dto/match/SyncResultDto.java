@@ -1,6 +1,5 @@
 package com.nooblol.account.dto.match;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class SyncResultDto {
 
-  private int syncTotalMatch;
-  private int syncSuccessMatch;
+    private int syncTotalMatch;
+    private int syncSuccessMatch;
 
-  public SyncResultDto(int syncTotalMatch, int syncSuccessMatch) {
-    this.syncTotalMatch = syncTotalMatch;
-    this.syncSuccessMatch = syncSuccessMatch;
-  }
+    public SyncResultDto(int syncTotalMatch, int syncSuccessMatch) {
+        this.syncTotalMatch = syncTotalMatch;
+        this.syncSuccessMatch = syncSuccessMatch;
+    }
 }

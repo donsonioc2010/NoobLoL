@@ -18,21 +18,21 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LetterDto {
 
-  private int letterId;
+    private int letterId;
 
-  private String letterTitle;
+    private String letterTitle;
 
-  private String letterContent;
+    private String letterContent;
 
-  private String toUserId;
+    private String toUserId;
 
-  private LetterStatus toStatus;
+    private LetterStatus toStatus;
 
-  private String fromUserId;
+    private String fromUserId;
 
-  private LetterStatus fromStatus;
+    private LetterStatus fromStatus;
 
-  private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-  private LetterType type;
+    private LetterType type;
 }

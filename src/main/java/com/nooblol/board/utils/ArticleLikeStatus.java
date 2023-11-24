@@ -4,27 +4,26 @@ import lombok.Getter;
 
 @Getter
 public enum ArticleLikeStatus {
+    LIKE(true),
+    NOT_LIKE(false);
 
-  LIKE(true), NOT_LIKE(false);
-
-  ArticleLikeStatus(boolean likeStatus) {
-    this.likeStatus = likeStatus;
-  }
-
-  boolean likeStatus;
-
-  public static ArticleLikeStatus findLikeStatusType(boolean likeStatus) {
-    if (likeStatus) {
-      return LIKE;
+    ArticleLikeStatus(boolean likeStatus) {
+        this.likeStatus = likeStatus;
     }
-    return NOT_LIKE;
-  }
 
+    boolean likeStatus;
 
-  public static ArticleLikeStatus findLikeStatusByInt(int num) {
-    if (num == 1) {
-      return LIKE;
+    public static ArticleLikeStatus findLikeStatusType(boolean likeStatus) {
+        if (likeStatus) {
+            return LIKE;
+        }
+        return NOT_LIKE;
     }
-    return NOT_LIKE;
-  }
+
+    public static ArticleLikeStatus findLikeStatusByInt(int num) {
+        if (num == 1) {
+            return LIKE;
+        }
+        return NOT_LIKE;
+    }
 }
