@@ -5,20 +5,20 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: CD NCP
-
-on:
-  push:
-    branches:
-      - 'develop'
-      - 'main'
-
-jobs:
-  CD:
+#name: CD NCP
+#
+#on:
+#  push:
+#    branches:
+#      - 'develop'
+#      - 'main'
+#
+#jobs:
+#  CD:
     ## NCP OS : Ubuntu 18.04
-    runs-on: ubuntu-18.04
+#    runs-on: ubuntu-18.04
 
-    steps:
+#    steps:
       ## Project JDK 11 Setting
 #      - name: Checkout
 #        uses: actions/checkout@v3
