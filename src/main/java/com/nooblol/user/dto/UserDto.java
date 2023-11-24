@@ -14,14 +14,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserDto {
 
-  private String userId;
-  private String userEmail;
-  private String userName;
-  private String userPassword;
-  private int userRole;
-  private int level;
-  private int exp;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-
+    private String userId;
+    private String userEmail;
+    private String userName;
+    private String userPassword;
+    private int userRole;
+    private int level;
+    private int exp;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

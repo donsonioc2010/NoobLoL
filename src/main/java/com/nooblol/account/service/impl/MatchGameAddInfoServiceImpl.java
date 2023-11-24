@@ -16,26 +16,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MatchGameAddInfoServiceImpl implements MatchGameAddInfoService {
 
-  private final MatchGameAddInfoMapper matchGameAddInfoMapper;
+    private final MatchGameAddInfoMapper matchGameAddInfoMapper;
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<MatchGameParticipantsDto> getMatchAllParticipantsList(String matchId) {
+        return matchGameAddInfoMapper.selectMatchAllParticipantsListByMatchId(matchId);
+    }
 
-  @Override
-  @Transactional(readOnly = true)
-  public List<MatchGameParticipantsDto> getMatchAllParticipantsList(String matchId) {
-    return matchGameAddInfoMapper.selectMatchAllParticipantsListByMatchId(matchId);
-  }
+    @Override
+    @Transactional(readOnly = true)
+    public List<MatchGameBansDto> getMatchBanList(String matchId) {
+        return matchGameAddInfoMapper.selectMatchGameBanList(matchId);
+    }
 
-  @Override
-  @Transactional(readOnly = true)
-  public List<MatchGameBansDto> getMatchBanList(String matchId) {
-    return matchGameAddInfoMapper.selectMatchGameBanList(matchId);
-  }
-
-  @Override
-  @Transactional(readOnly = true)
-  public List<MatchUseRuneDto> getMatchUseRunList(String matchId, String puuid) {
-    return matchGameAddInfoMapper.selectMatchGameUseRunes(puuid, matchId);
-  }
-
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<MatchUseRuneDto> getMatchUseRunList(String matchId, String puuid) {
+        return matchGameAddInfoMapper.selectMatchGameUseRunes(puuid, matchId);
+    }
 }

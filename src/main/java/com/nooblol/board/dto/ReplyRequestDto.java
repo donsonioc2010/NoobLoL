@@ -14,15 +14,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReplyRequestDto {
 
-  @NotNull(message = ArticleMessage.ARTICLE_ID_NULL)
-  private Integer articleId;
+    @NotNull(message = ArticleMessage.ARTICLE_ID_NULL)
+    private Integer articleId;
 
-  @NotNull(message = ArticleMessage.REPLY_CONTENT_NULL)
-  private String replyContent;
+    @NotNull(message = ArticleMessage.REPLY_CONTENT_NULL)
+    private String replyContent;
 
-  @NotNull(message = ArticleMessage.REPLY_STATUS_NULL)
-  private ReplyStatus status;
+    @NotNull(message = ArticleMessage.REPLY_STATUS_NULL)
+    private ReplyStatus status;
 
-  private Integer sortNo;
-
+    private Integer sortNo;
 }

@@ -15,9 +15,9 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MatchUseRuneDto {
 
-  private String puuid;
-  private String matchId;
-  private String type;
-  private int sortNo;
-  private int perk;
+    private String puuid;
+    private String matchId;
+    private String type;
+    private int sortNo;
+    private int perk;
 }

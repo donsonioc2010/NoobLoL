@@ -15,11 +15,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ArticleStatusDto {
 
-  private int articleId;
+    private int articleId;
 
-  private String userId;
+    private String userId;
 
-  private ArticleLikeStatus likeType;
+    private ArticleLikeStatus likeType;
 
-  private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

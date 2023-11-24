@@ -13,9 +13,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AdminUserDto {
 
-  @NotBlank(message = AdminConstants.ADMIN_USERID_NULL)
-  private String adminUserId;
+    @NotBlank(message = AdminConstants.ADMIN_USERID_NULL)
+    private String adminUserId;
 
-  @NotBlank(message = AdminConstants.ADMIN_PASSWORD_NULL)
-  private String adminUserPassword;
+    @NotBlank(message = AdminConstants.ADMIN_PASSWORD_NULL)
+    private String adminUserPassword;
 }

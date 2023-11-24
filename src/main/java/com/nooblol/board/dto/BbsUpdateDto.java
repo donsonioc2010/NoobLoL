@@ -1,6 +1,5 @@
 package com.nooblol.board.dto;
 
-
 import com.nooblol.board.utils.ArticleMessage;
 import com.nooblol.board.utils.BoardStatus;
 import java.time.LocalDateTime;
@@ -20,35 +19,40 @@ import org.springframework.util.ObjectUtils;
 @AllArgsConstructor
 public class BbsUpdateDto extends BbsRequestDto {
 
-  @NotNull(message = ArticleMessage.BBS_ID_NULL)
-  private Integer bbsId;
+    @NotNull(message = ArticleMessage.BBS_ID_NULL)
+    private Integer bbsId;
 
-  private Integer categoryId;
+    private Integer categoryId;
 
-  private String bbsName;
+    private String bbsName;
 
-  private BoardStatus status;
+    private BoardStatus status;
 
-  @AssertTrue(message = ArticleMessage.BBS_UPDATE_VALIDATION)
-  public boolean isValidUpdateData() {
-    if (ObjectUtils.isEmpty(categoryId) &&
-        StringUtils.isBlank(bbsName) &&
-        ObjectUtils.isEmpty(status)) {
-      return false;
+    @AssertTrue(message = ArticleMessage.BBS_UPDATE_VALIDATION)
+    public boolean isValidUpdateData() {
+        if (ObjectUtils.isEmpty(categoryId)
+                && StringUtils.isBlank(bbsName)
+                && ObjectUtils.isEmpty(status)) {
+            return false;
+        }
+
+        return true;
     }
 
-    return true;
-  }
-
-
-  @Builder
-  public BbsUpdateDto(String createdUserId, LocalDateTime createdAt, String updatedUserId,
-      LocalDateTime updatedAt, Integer bbsId, Integer categoryId, String bbsName,
-      BoardStatus status) {
-    super(createdUserId, createdAt, updatedUserId, updatedAt);
-    this.bbsId = bbsId;
-    this.categoryId = categoryId;
-    this.bbsName = bbsName;
-    this.status = status;
-  }
+    @Builder
+    public BbsUpdateDto(
+            String createdUserId,
+            LocalDateTime createdAt,
+            String updatedUserId,
+            LocalDateTime updatedAt,
+            Integer bbsId,
+            Integer categoryId,
+            String bbsName,
+            BoardStatus status) {
+        super(createdUserId, createdAt, updatedUserId, updatedAt);
+        this.bbsId = bbsId;
+        this.categoryId = categoryId;
+        this.bbsName = bbsName;
+        this.status = status;
+    }
 }

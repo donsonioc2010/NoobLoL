@@ -7,11 +7,11 @@ import lombok.Setter;
 @Setter
 public class ResponseDto<T> {
 
-  private int resultCode;
-  private T result;
+    private int resultCode;
+    private T result;
 
-  public ResponseDto(int resultCode, T result) {
-    this.resultCode = resultCode;
-    this.result = result;
-  }
+    public ResponseDto(int resultCode, T result) {
+        this.resultCode = resultCode;
+        this.result = result;
+    }
 }

@@ -15,18 +15,17 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReplyDto {
 
-  private Integer replyId;
+    private Integer replyId;
 
-  private int articleId;
+    private int articleId;
 
-  private String replyContent;
+    private String replyContent;
 
-  private ReplyStatus status;
+    private ReplyStatus status;
 
-  private int sortNo;
+    private int sortNo;
 
-  private String createdUserId;
+    private String createdUserId;
 
-  private LocalDateTime createdAt;
-
+    private LocalDateTime createdAt;
 }

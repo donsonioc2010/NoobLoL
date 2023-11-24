@@ -16,9 +16,8 @@ import lombok.Setter;
 @Builder
 public class ArticleUpdateRequestDto extends ArticleRequestBaseDto {
 
-  @NotNull(message = ArticleMessage.ARTICLE_ID_NULL)
-  private Integer articleId;
+    @NotNull(message = ArticleMessage.ARTICLE_ID_NULL)
+    private Integer articleId;
 
-  private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }
-

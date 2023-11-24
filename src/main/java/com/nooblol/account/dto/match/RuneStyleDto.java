@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RuneStyleDto {
 
-  private String description;
-  private int style;
-  private List<RuneStyleSelectionDto> selections;
+    private String description;
+    private int style;
+    private List<RuneStyleSelectionDto> selections;
 }

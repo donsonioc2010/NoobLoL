@@ -12,6 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MatchDto {
 
-  private MatchMetaDataDto metadata;
-  private MatchGameInfoDto info;
+    private MatchMetaDataDto metadata;
+    private MatchGameInfoDto info;
 }

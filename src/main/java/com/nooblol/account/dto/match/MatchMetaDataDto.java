@@ -9,6 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MatchMetaDataDto {
 
-  private String dataVersion;
-  private String matchId;
+    private String dataVersion;
+    private String matchId;
 }

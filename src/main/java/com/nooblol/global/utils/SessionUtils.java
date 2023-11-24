@@ -6,24 +6,21 @@ import org.springframework.util.ObjectUtils;
 
 public class SessionUtils {
 
+    private SessionUtils() {}
 
-  private SessionUtils() {
-  }
-
-  public static String getSessionUserId(HttpSession session) {
-    UserDto userAttribute = (UserDto) session.getAttribute(SessionEnum.USER_LOGIN.getValue());
-    if (ObjectUtils.isEmpty(userAttribute)) {
-      return null;
+    public static String getSessionUserId(HttpSession session) {
+        UserDto userAttribute = (UserDto) session.getAttribute(SessionEnum.USER_LOGIN.getValue());
+        if (ObjectUtils.isEmpty(userAttribute)) {
+            return null;
+        }
+        return userAttribute.getUserId();
     }
-    return userAttribute.getUserId();
-  }
 
-  public static Integer getSessionUserRole(HttpSession session) {
-    UserDto userAttribute = (UserDto) session.getAttribute(SessionEnum.USER_LOGIN.getValue());
-    if (ObjectUtils.isEmpty(userAttribute)) {
-      return null;
+    public static Integer getSessionUserRole(HttpSession session) {
+        UserDto userAttribute = (UserDto) session.getAttribute(SessionEnum.USER_LOGIN.getValue());
+        if (ObjectUtils.isEmpty(userAttribute)) {
+            return null;
+        }
+        return userAttribute.getUserRole();
     }
-    return userAttribute.getUserRole();
-  }
-
 }

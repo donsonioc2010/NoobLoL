@@ -16,15 +16,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReplyInsertDto extends ReplyRequestDto {
 
-  private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-  @Builder
-  public ReplyInsertDto(
-      @NotNull(message = ArticleMessage.ARTICLE_ID_NULL) Integer articleId,
-      @NotNull(message = ArticleMessage.REPLY_CONTENT_NULL) String replyContent,
-      @NotNull(message = ArticleMessage.REPLY_STATUS_NULL) ReplyStatus status,
-      Integer sortNo
-  ) {
-    super(articleId, replyContent, status, sortNo);
-  }
+    @Builder
+    public ReplyInsertDto(
+            @NotNull(message = ArticleMessage.ARTICLE_ID_NULL) Integer articleId,
+            @NotNull(message = ArticleMessage.REPLY_CONTENT_NULL) String replyContent,
+            @NotNull(message = ArticleMessage.REPLY_STATUS_NULL) ReplyStatus status,
+            Integer sortNo) {
+        super(articleId, replyContent, status, sortNo);
+    }
 }

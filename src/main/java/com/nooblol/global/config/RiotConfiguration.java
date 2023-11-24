@@ -16,27 +16,27 @@ import org.springframework.http.HttpHeaders;
 @Setter
 public class RiotConfiguration {
 
-  private String apiKey;
+    private String apiKey;
 
-  private String summonerDomain;
+    private String summonerDomain;
 
-  private String summonerNameSearchByIdApi;
+    private String summonerNameSearchByIdApi;
 
-  private String summonerNameSearchByNameApi;
+    private String summonerNameSearchByNameApi;
 
-  private String summonerHistorySearchBySummonerIdApi;
+    private String summonerHistorySearchBySummonerIdApi;
 
-  private String matchDomain;
+    private String matchDomain;
 
-  private String matchListSearchByPuuid;
+    private String matchListSearchByPuuid;
 
-  private String matchGameInfoByMatchId;
+    private String matchGameInfoByMatchId;
 
-  @Bean
-  public HttpHeaders initRiotHeader() {
-    HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add("X-Riot-Token", getApiKey());
+    @Bean
+    public HttpHeaders initRiotHeader() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-Riot-Token", getApiKey());
 
-    return httpHeaders;
-  }
+        return httpHeaders;
+    }
 }

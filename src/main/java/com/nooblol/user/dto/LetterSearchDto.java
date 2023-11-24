@@ -14,13 +14,13 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LetterSearchDto {
 
-  private String userId;
+    private String userId;
 
-  private String statusArr;
+    private String statusArr;
 
-  private int pageNum;
+    private int pageNum;
 
-  private int limitNum;
+    private int limitNum;
 
-  private LetterType letterType;
+    private LetterType letterType;
 }

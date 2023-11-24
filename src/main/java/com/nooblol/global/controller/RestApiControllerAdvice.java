@@ -16,110 +16,111 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-
-/**
- * Validation 을 진행하게 될 경우 ResponseEntity가 반환이 아닌, ResponseDto가 응답이 되도록 하기 위한 설정
- */
+/** Validation 을 진행하게 될 경우 ResponseEntity가 반환이 아닌, ResponseDto가 응답이 되도록 하기 위한 설정 */
 @RestControllerAdvice
 public class RestApiControllerAdvice {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
-  @ExceptionHandler({ConstraintViolationException.class})
-  public ResponseDto constraintViolationException(
-      ConstraintViolationException e, HttpServletRequest request
-  ) {
-    if (!ObjectUtils.isEmpty(e)) {
-      e.getConstraintViolations().forEach(error -> {
-        log.info(
-            "[" + error.getRootBeanClass() + "] :"
-                + "RequestUrl : " + request.getRequestURI()
-                + ", ErrorTemplate : " + error.getMessageTemplate()
-                + ", PropertyPath : " + error.getPropertyPath()
-                + ", ErrorContent : " + error.getMessage()
-        );
-      });
-      log.warn("Exception Trace : ", e);
-    }
-    return ResponseEnum.BAD_REQUEST.getResponse();
-  }
-
-  @ExceptionHandler({IllegalArgumentException.class})
-  public ResponseDto illegalArgumentException(
-      IllegalArgumentException e, HttpServletRequest request
-  ) {
-    if (!ObjectUtils.isEmpty(e)) {
-      log.warn(
-          "[IllegalArgumentException] :"
-              + "requestUrl: " + request.getRequestURI()
-              + ", Error Message : " + e.getMessage()
-      );
-      log.warn("Exception Trace : ", e);
-    }
-    switch (e.getMessage()) {
-      case ExceptionMessage.NO_DATA:
-      case ExceptionMessage.NOT_FOUND:
-        return ResponseEnum.NOT_FOUND.getResponse();
-
-      case ExceptionMessage.SERVER_ERROR:
-        return ResponseEnum.INTERNAL_SERVER_ERROR.getResponse();
-
-      case ExceptionMessage.HAVE_DATA:
-        ResponseDto rtn = ResponseEnum.CONFLICT.getResponse();
-        rtn.setResult("이미 존재하는 데이터 입니다");
-        return rtn;
-
-      case ExceptionMessage.UNAUTHORIZED:
-        return ResponseEnum.UNAUTHORIZED.getResponse();
-
-      default:
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseDto constraintViolationException(
+            ConstraintViolationException e, HttpServletRequest request) {
+        if (!ObjectUtils.isEmpty(e)) {
+            e.getConstraintViolations()
+                    .forEach(
+                            error -> {
+                                log.info(
+                                        "["
+                                                + error.getRootBeanClass()
+                                                + "] :"
+                                                + "RequestUrl : "
+                                                + request.getRequestURI()
+                                                + ", ErrorTemplate : "
+                                                + error.getMessageTemplate()
+                                                + ", PropertyPath : "
+                                                + error.getPropertyPath()
+                                                + ", ErrorContent : "
+                                                + error.getMessage());
+                            });
+            log.warn("Exception Trace : ", e);
+        }
         return ResponseEnum.BAD_REQUEST.getResponse();
     }
-  }
 
-  @ExceptionHandler({MethodArgumentNotValidException.class})
-  public ResponseDto methodValidException(
-      MethodArgumentNotValidException e,
-      HttpServletRequest request
-  ) {
-    if (!ObjectUtils.isEmpty(e.getBindingResult())) {
-      BindingResult br = e.getBindingResult();
-      if (br.hasErrors()) {
-        FieldError er = br.getFieldError();
-        log.info(
-            "[MethodArgumentNotValidException] : "
-                + " RequestUri : " + request.getRequestURI()
-                + ", ErrorField : " + er.getField()
-                + ", ErrorCodes : " + er.getCode()
-                + ", Error Default Message : " + er.getDefaultMessage()
-        );
-      }
-      log.info(
-          "[MethodArgumentNotValidException] : "
-              + ", ErrorStack : " + e.getStackTrace()
-      );
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseDto illegalArgumentException(
+            IllegalArgumentException e, HttpServletRequest request) {
+        if (!ObjectUtils.isEmpty(e)) {
+            log.warn(
+                    "[IllegalArgumentException] :"
+                            + "requestUrl: "
+                            + request.getRequestURI()
+                            + ", Error Message : "
+                            + e.getMessage());
+            log.warn("Exception Trace : ", e);
+        }
+        switch (e.getMessage()) {
+            case ExceptionMessage.NO_DATA:
+            case ExceptionMessage.NOT_FOUND:
+                return ResponseEnum.NOT_FOUND.getResponse();
+
+            case ExceptionMessage.SERVER_ERROR:
+                return ResponseEnum.INTERNAL_SERVER_ERROR.getResponse();
+
+            case ExceptionMessage.HAVE_DATA:
+                ResponseDto rtn = ResponseEnum.CONFLICT.getResponse();
+                rtn.setResult("이미 존재하는 데이터 입니다");
+                return rtn;
+
+            case ExceptionMessage.UNAUTHORIZED:
+                return ResponseEnum.UNAUTHORIZED.getResponse();
+
+            default:
+                return ResponseEnum.BAD_REQUEST.getResponse();
+        }
     }
 
-    return ResponseEnum.BAD_REQUEST.getResponse();
-  }
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseDto methodValidException(
+            MethodArgumentNotValidException e, HttpServletRequest request) {
+        if (!ObjectUtils.isEmpty(e.getBindingResult())) {
+            BindingResult br = e.getBindingResult();
+            if (br.hasErrors()) {
+                FieldError er = br.getFieldError();
+                log.info(
+                        "[MethodArgumentNotValidException] : "
+                                + " RequestUri : "
+                                + request.getRequestURI()
+                                + ", ErrorField : "
+                                + er.getField()
+                                + ", ErrorCodes : "
+                                + er.getCode()
+                                + ", Error Default Message : "
+                                + er.getDefaultMessage());
+            }
+            log.info("[MethodArgumentNotValidException] : " + ", ErrorStack : " + e.getStackTrace());
+        }
 
-  //PathVariable의 파라미터가 없는경우 해당 Exception이 실행 된다.
-  @ExceptionHandler({NoHandlerFoundException.class})
-  public ResponseDto noHandlerFoundExceptionHandling(NoHandlerFoundException e) {
-    log.warn("[NoHandlerFoundExceptionHandling]", e);
-    return ResponseEnum.BAD_REQUEST.getResponse();
-  }
+        return ResponseEnum.BAD_REQUEST.getResponse();
+    }
 
-  /**
-   * DELETE를 사용하며 PathVariable을 같이 사용하는 경우 PathVariable의 값이 없는채로 들어오는 경우 , 405 - MethodNowAllowed가
-   * 발생함. 해당 Exception에 대한 Handler
-   *
-   * @param e
-   * @return
-   */
-  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-  public ResponseDto methodNotAllowedExceptionHandling(HttpRequestMethodNotSupportedException e) {
-    log.warn("[HttpRequestMethodNotSupportedException]", e);
-    return ResponseEnum.BAD_REQUEST.getResponse();
-  }
+    // PathVariable의 파라미터가 없는경우 해당 Exception이 실행 된다.
+    @ExceptionHandler({NoHandlerFoundException.class})
+    public ResponseDto noHandlerFoundExceptionHandling(NoHandlerFoundException e) {
+        log.warn("[NoHandlerFoundExceptionHandling]", e);
+        return ResponseEnum.BAD_REQUEST.getResponse();
+    }
+
+    /**
+     * DELETE를 사용하며 PathVariable을 같이 사용하는 경우 PathVariable의 값이 없는채로 들어오는 경우 , 405 - MethodNowAllowed가
+     * 발생함. 해당 Exception에 대한 Handler
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+    public ResponseDto methodNotAllowedExceptionHandling(HttpRequestMethodNotSupportedException e) {
+        log.warn("[HttpRequestMethodNotSupportedException]", e);
+        return ResponseEnum.BAD_REQUEST.getResponse();
+    }
 }

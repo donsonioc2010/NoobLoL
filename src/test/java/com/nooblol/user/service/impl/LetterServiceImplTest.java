@@ -29,347 +29,360 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class LetterServiceImplTest {
 
-  @InjectMocks
-  LetterServiceImpl letterService;
+    @InjectMocks LetterServiceImpl letterService;
 
-  @Mock
-  LetterMapper letterMapper;
+    @Mock LetterMapper letterMapper;
 
-  @Mock
-  UserInfoService userInfoService;
+    @Mock UserInfoService userInfoService;
 
-  HttpSession authUserSession = SessionSampleObject.authUserLoginSession;
+    HttpSession authUserSession = SessionSampleObject.authUserLoginSession;
 
+    @Order(1)
+    @Nested
+    @DisplayName("쪽지 발송 테스트")
+    class LetterInsertTest {
 
-  @Order(1)
-  @Nested
-  @DisplayName("쪽지 발송 테스트")
-  class LetterInsertTest {
+        @Test
+        @DisplayName("쪽지의 수신인이 발송인과 동일할 경우 BadRequest Exception이 발생한다")
+        void insertLetter_WhenToUserEqualsFromUser_ThenBadRequestException() {
+            // given
+            LetterInsertRequestDto requestDto = new LetterInsertRequestDto();
+            requestDto.setToUserId(SessionUtils.getSessionUserId(authUserSession));
 
-    @Test
-    @DisplayName("쪽지의 수신인이 발송인과 동일할 경우 BadRequest Exception이 발생한다")
-    void insertLetter_WhenToUserEqualsFromUser_ThenBadRequestException() {
-      //given
-      LetterInsertRequestDto requestDto = new LetterInsertRequestDto();
-      requestDto.setToUserId(SessionUtils.getSessionUserId(authUserSession));
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> {
+                                letterService.insertLetter(requestDto, authUserSession);
+                            });
 
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class, () -> {
-        letterService.insertLetter(requestDto, authUserSession);
-      });
-
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
-    }
-
-    @Test
-    @DisplayName("쪽지의 수신인이 실제 DB에 없는 UserId인 경우 NotFound Exception이 발생한다.")
-    void insertLetter_WhenNotExistsToUser_ThenNotFoundException() {
-      //given
-      LetterInsertRequestDto requestDto = new LetterInsertRequestDto();
-      requestDto.setToUserId("NotExists User Id ");
-
-      //mock
-      when(userInfoService.selectUserInfoByUserId(requestDto.getToUserId())).thenReturn(null);
-
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class, () -> {
-        letterService.insertLetter(requestDto, authUserSession);
-      });
-
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.NOT_FOUND);
-    }
-
-    @Test
-    @DisplayName("본인한테 보낸 쪽지가아니고, 수신인이 존재하는 경우 Return으로 true를 획득한다.")
-    void insertLetter_WhenInsertSuccess_ThenReturnTrue() {
-      //given
-      String mockToUserId = "real User Id";
-
-      LetterInsertRequestDto mockRequestDto = new LetterInsertRequestDto().builder()
-          .letterTitle("Sample Title")
-          .letterContent("Sample Content")
-          .toUserId(mockToUserId)
-          .build();
-
-      UserDto mockReturnDto = new UserDto();
-
-      //mock
-      when(userInfoService.selectUserInfoByUserId(mockRequestDto.getToUserId()))
-          .thenReturn(mockReturnDto);
-      when(letterMapper.insertLetter(any())).thenReturn(1);
-
-      //when
-      boolean result = letterService.insertLetter(mockRequestDto, authUserSession);
-
-      //then
-      assertTrue(result);
-    }
-
-
-  }
-
-  @Order(2)
-  @Nested
-  @DisplayName("쪽지 조회 테스트")
-  class LetterSelectTest {
-
-    @Test
-    @DisplayName("조회시 데이터가 없는 경우 NotFound Exception이 밸생한다.")
-    void getLetter_WhenNoHaveLetter_ThenNotFoundException() {
-      //given
-      int nullLetterId = 99999;
-
-      //mock
-      when(letterMapper.selectLetterByLetterId(nullLetterId)).thenReturn(null);
-
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class, () -> {
-        letterService.getLetter(nullLetterId, authUserSession);
-      });
-
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.NO_DATA);
-    }
-
-    @Test
-    @DisplayName("조회시 수신자와 발신자의 UserId가 모두 현재 로그인한 사용자가 아닌 경우 Forbidden Exception이 발생한다. ")
-    void getLetter_WhenReqUserNotToUserIdAndFromUserId_ThenForbiddenException() {
-      //given
-      int letterId = 1;
-
-      LetterDto mockReturnLetterDto = new LetterDto().builder()
-          .letterId(letterId)
-          .toUserId("Don't have User Id")
-          .fromUserId("Don't have User Id")
-          .build();
-
-      //mock
-      when(letterMapper.selectLetterByLetterId(letterId)).thenReturn(mockReturnLetterDto);
-
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class, () -> {
-        letterService.getLetter(letterId, authUserSession);
-      });
-
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.FORBIDDEN);
-    }
-
-    @Test
-    @DisplayName("수신자 또는 발신자인 경우에는 정상적으로 쪽지 데이터를 획득한다")
-    void getLetter_WhenReqUserIsToUserIdOrFromUserId_ThenReturnLetter() {
-      //given
-      int letterId = 1;
-
-      LetterDto mockReturnLetterDto = new LetterDto().builder()
-          .letterId(letterId)
-          .toUserId("Don't have User Id")
-          .fromUserId(SessionUtils.getSessionUserId(authUserSession))
-          .build();
-
-      //mock
-      when(letterMapper.selectLetterByLetterId(letterId)).thenReturn(mockReturnLetterDto);
-
-      //when
-      LetterDto result = letterService.getLetter(letterId, authUserSession);
-
-      //then
-      assertEquals(mockReturnLetterDto, result);
-    }
-  }
-
-  @Order(3)
-  @Nested
-  @DisplayName("쪽지 리스트 조회 테스트")
-  class LetterListSelectTest {
-
-    @Test
-    @DisplayName("수신, 발신 리스트 타입이 아닌 다른 타입이 들어온 경우, BadRequest가 발생한다.")
-    void getLetterListByUserId_WhenIsNotExistsType_ThenBadRequestExcpeiton() {
-      //gvien
-      LetterSearchDto requestDto = new LetterSearchDto().builder()
-          .letterType(null)
-          .build();
-
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class,
-          () -> letterService.getLetterListByUserId(requestDto)
-      );
-
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
-    }
-
-    @Test
-    @DisplayName("수신 리스트 조회시에 데이터가 없는 경우, 비어있는 리스트를 획득한다.")
-    void getLetterListByUserId_WhenIsNotExistsLetterByDbTypeTo_ThenReturnEmptyLetterList() {
-      //given
-      LetterSearchDto requestDto = new LetterSearchDto().builder()
-          .letterType(LetterType.TO)
-          .build();
-
-      //mock
-      when(letterMapper.selectLetterListByUserIdAndTypeTo(requestDto))
-          .thenReturn(new ArrayList<LetterDto>());
-
-      //when
-      List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
-
-      //then
-      assertTrue(result.isEmpty());
-    }
-
-    @Test
-    @DisplayName("수신 리스트 조회시 데이터가 있는 경우, 수신된 쪽지 리스트를 획득한다.")
-    void getLetterListByUserId_WhenIsExistsLetterAndTypeTo_ThenReturnLetterList() {
-      //given
-      LetterSearchDto requestDto = new LetterSearchDto().builder()
-          .userId(SessionUtils.getSessionUserId(authUserSession))
-          .letterType(LetterType.TO)
-          .statusArr(getLetterSearchTypeStr())
-          .limitNum(30)
-          .pageNum(0)
-          .build();
-
-      List<LetterDto> mockReturnLetterList = new ArrayList<>();
-      mockReturnLetterList.add(LetterDto.builder().letterId(1).build());
-      mockReturnLetterList.add(LetterDto.builder().letterId(2).build());
-      mockReturnLetterList.add(LetterDto.builder().letterId(3).build());
-
-      //mock
-      when(letterMapper.selectLetterListByUserIdAndTypeTo(requestDto)).thenReturn(
-          mockReturnLetterList);
-
-      //when
-      List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
-
-      //then
-      assertEquals(result, mockReturnLetterList);
-    }
-
-    @Test
-    @DisplayName("발송 리스트 조회시에 데이터가 없는 경우, 비어있는 리스트를 획득한다.")
-    void getLetterListByUserId_WhenIsNotExistsLetterByDbTypeFrom_ThenReturnEmptyLetterList() {
-      //given
-      LetterSearchDto requestDto = new LetterSearchDto().builder()
-          .letterType(LetterType.FROM)
-          .build();
-
-      //mock
-      when(letterMapper.selectLetterListByUserIdAndTypeFrom(requestDto))
-          .thenReturn(new ArrayList<LetterDto>());
-
-      //when
-      List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
-
-      //then
-      assertTrue(result.isEmpty());
-    }
-
-    @Test
-    @DisplayName("발송 리스트 조회시 데이터가 있는 경우, 발송한 쪽지 리스트를 획득한다.")
-    void getLetterListByUserId_WhenIsExistsLetterAndTypeFrom_ThenReturnLetterList() {
-      //given
-      LetterSearchDto requestDto = LetterSearchDto.builder()
-          .userId(SessionUtils.getSessionUserId(authUserSession))
-          .letterType(LetterType.FROM)
-          .statusArr(getLetterSearchTypeStr())
-          .limitNum(30)
-          .pageNum(0)
-          .build();
-
-      List<LetterDto> mockReturnLetterList = new ArrayList<>();
-      mockReturnLetterList.add(LetterDto.builder().letterId(1).build());
-      mockReturnLetterList.add(LetterDto.builder().letterId(2).build());
-      mockReturnLetterList.add(LetterDto.builder().letterId(3).build());
-
-      //mock
-      when(letterMapper.selectLetterListByUserIdAndTypeFrom(requestDto)).thenReturn(
-          mockReturnLetterList);
-
-      //when
-      List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
-
-      //then
-      assertEquals(result, mockReturnLetterList);
-    }
-
-    String getLetterSearchTypeStr() {
-
-      String searchListStr = "(";
-
-      for (int i = 0; i < LetterStatus.SEARCH_STATUS_ARR.length; i++) {
-        searchListStr += "\'" + LetterStatus.SEARCH_STATUS_ARR[i] + "\',";
-        if (i != LetterStatus.SEARCH_STATUS_ARR.length - 1) {
-          searchListStr += ",";
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
         }
-      }
-      searchListStr += ")";
-      return searchListStr;
+
+        @Test
+        @DisplayName("쪽지의 수신인이 실제 DB에 없는 UserId인 경우 NotFound Exception이 발생한다.")
+        void insertLetter_WhenNotExistsToUser_ThenNotFoundException() {
+            // given
+            LetterInsertRequestDto requestDto = new LetterInsertRequestDto();
+            requestDto.setToUserId("NotExists User Id ");
+
+            // mock
+            when(userInfoService.selectUserInfoByUserId(requestDto.getToUserId())).thenReturn(null);
+
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> {
+                                letterService.insertLetter(requestDto, authUserSession);
+                            });
+
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.NOT_FOUND);
+        }
+
+        @Test
+        @DisplayName("본인한테 보낸 쪽지가아니고, 수신인이 존재하는 경우 Return으로 true를 획득한다.")
+        void insertLetter_WhenInsertSuccess_ThenReturnTrue() {
+            // given
+            String mockToUserId = "real User Id";
+
+            LetterInsertRequestDto mockRequestDto =
+                    new LetterInsertRequestDto()
+                            .builder()
+                            .letterTitle("Sample Title")
+                            .letterContent("Sample Content")
+                            .toUserId(mockToUserId)
+                            .build();
+
+            UserDto mockReturnDto = new UserDto();
+
+            // mock
+            when(userInfoService.selectUserInfoByUserId(mockRequestDto.getToUserId()))
+                    .thenReturn(mockReturnDto);
+            when(letterMapper.insertLetter(any())).thenReturn(1);
+
+            // when
+            boolean result = letterService.insertLetter(mockRequestDto, authUserSession);
+
+            // then
+            assertTrue(result);
+        }
     }
-  }
 
+    @Order(2)
+    @Nested
+    @DisplayName("쪽지 조회 테스트")
+    class LetterSelectTest {
 
-  @Order(4)
-  @Nested
-  @DisplayName("쪽지 삭제 테스트")
-  class LetterDeleteTest {
+        @Test
+        @DisplayName("조회시 데이터가 없는 경우 NotFound Exception이 밸생한다.")
+        void getLetter_WhenNoHaveLetter_ThenNotFoundException() {
+            // given
+            int nullLetterId = 99999;
 
-    @Test
-    @DisplayName("Constants에 없는 Type이 입력된 경우 BadRequest Exception이 발생한다.")
-    void deleteLetter_WhenLetterTypeNotExistsConstants_ThenBadRequestException() {
-      //given
-      LetterDto requestDto = new LetterDto();
-      requestDto.setType(null);
+            // mock
+            when(letterMapper.selectLetterByLetterId(nullLetterId)).thenReturn(null);
 
-      //when
-      Exception e = assertThrows(IllegalArgumentException.class, () -> {
-        letterService.deleteLetter(requestDto, authUserSession);
-      });
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> {
+                                letterService.getLetter(nullLetterId, authUserSession);
+                            });
 
-      //then
-      assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.NO_DATA);
+        }
+
+        @Test
+        @DisplayName("조회시 수신자와 발신자의 UserId가 모두 현재 로그인한 사용자가 아닌 경우 Forbidden Exception이 발생한다. ")
+        void getLetter_WhenReqUserNotToUserIdAndFromUserId_ThenForbiddenException() {
+            // given
+            int letterId = 1;
+
+            LetterDto mockReturnLetterDto =
+                    new LetterDto()
+                            .builder()
+                            .letterId(letterId)
+                            .toUserId("Don't have User Id")
+                            .fromUserId("Don't have User Id")
+                            .build();
+
+            // mock
+            when(letterMapper.selectLetterByLetterId(letterId)).thenReturn(mockReturnLetterDto);
+
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> {
+                                letterService.getLetter(letterId, authUserSession);
+                            });
+
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.FORBIDDEN);
+        }
+
+        @Test
+        @DisplayName("수신자 또는 발신자인 경우에는 정상적으로 쪽지 데이터를 획득한다")
+        void getLetter_WhenReqUserIsToUserIdOrFromUserId_ThenReturnLetter() {
+            // given
+            int letterId = 1;
+
+            LetterDto mockReturnLetterDto =
+                    new LetterDto()
+                            .builder()
+                            .letterId(letterId)
+                            .toUserId("Don't have User Id")
+                            .fromUserId(SessionUtils.getSessionUserId(authUserSession))
+                            .build();
+
+            // mock
+            when(letterMapper.selectLetterByLetterId(letterId)).thenReturn(mockReturnLetterDto);
+
+            // when
+            LetterDto result = letterService.getLetter(letterId, authUserSession);
+
+            // then
+            assertEquals(mockReturnLetterDto, result);
+        }
     }
 
-    @Test
-    @DisplayName("DB에 letterId의 쪽지가 없는 경우 Return으로 False를 획득한다.")
-    void deleteLetter_WhenIsNotExistsLetter_ThenReturnFalse() {
-      //given
-      int nullLetterId = 99999;
-      LetterDto requestDto = new LetterDto();
-      requestDto.setLetterId(nullLetterId);
-      requestDto.setType(LetterType.TO);
+    @Order(3)
+    @Nested
+    @DisplayName("쪽지 리스트 조회 테스트")
+    class LetterListSelectTest {
 
-      //mock
-      when(letterMapper.updateLetterToStatusByLetterIdAndToUserId(any())).thenReturn(0);
+        @Test
+        @DisplayName("수신, 발신 리스트 타입이 아닌 다른 타입이 들어온 경우, BadRequest가 발생한다.")
+        void getLetterListByUserId_WhenIsNotExistsType_ThenBadRequestExcpeiton() {
+            // gvien
+            LetterSearchDto requestDto = new LetterSearchDto().builder().letterType(null).build();
 
-      //when
-      boolean result = letterService.deleteLetter(requestDto, authUserSession);
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> letterService.getLetterListByUserId(requestDto));
 
-      //then
-      assertFalse(result);
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("수신 리스트 조회시에 데이터가 없는 경우, 비어있는 리스트를 획득한다.")
+        void getLetterListByUserId_WhenIsNotExistsLetterByDbTypeTo_ThenReturnEmptyLetterList() {
+            // given
+            LetterSearchDto requestDto =
+                    new LetterSearchDto().builder().letterType(LetterType.TO).build();
+
+            // mock
+            when(letterMapper.selectLetterListByUserIdAndTypeTo(requestDto))
+                    .thenReturn(new ArrayList<LetterDto>());
+
+            // when
+            List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
+
+            // then
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        @DisplayName("수신 리스트 조회시 데이터가 있는 경우, 수신된 쪽지 리스트를 획득한다.")
+        void getLetterListByUserId_WhenIsExistsLetterAndTypeTo_ThenReturnLetterList() {
+            // given
+            LetterSearchDto requestDto =
+                    new LetterSearchDto()
+                            .builder()
+                            .userId(SessionUtils.getSessionUserId(authUserSession))
+                            .letterType(LetterType.TO)
+                            .statusArr(getLetterSearchTypeStr())
+                            .limitNum(30)
+                            .pageNum(0)
+                            .build();
+
+            List<LetterDto> mockReturnLetterList = new ArrayList<>();
+            mockReturnLetterList.add(LetterDto.builder().letterId(1).build());
+            mockReturnLetterList.add(LetterDto.builder().letterId(2).build());
+            mockReturnLetterList.add(LetterDto.builder().letterId(3).build());
+
+            // mock
+            when(letterMapper.selectLetterListByUserIdAndTypeTo(requestDto))
+                    .thenReturn(mockReturnLetterList);
+
+            // when
+            List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
+
+            // then
+            assertEquals(result, mockReturnLetterList);
+        }
+
+        @Test
+        @DisplayName("발송 리스트 조회시에 데이터가 없는 경우, 비어있는 리스트를 획득한다.")
+        void getLetterListByUserId_WhenIsNotExistsLetterByDbTypeFrom_ThenReturnEmptyLetterList() {
+            // given
+            LetterSearchDto requestDto =
+                    new LetterSearchDto().builder().letterType(LetterType.FROM).build();
+
+            // mock
+            when(letterMapper.selectLetterListByUserIdAndTypeFrom(requestDto))
+                    .thenReturn(new ArrayList<LetterDto>());
+
+            // when
+            List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
+
+            // then
+            assertTrue(result.isEmpty());
+        }
+
+        @Test
+        @DisplayName("발송 리스트 조회시 데이터가 있는 경우, 발송한 쪽지 리스트를 획득한다.")
+        void getLetterListByUserId_WhenIsExistsLetterAndTypeFrom_ThenReturnLetterList() {
+            // given
+            LetterSearchDto requestDto =
+                    LetterSearchDto.builder()
+                            .userId(SessionUtils.getSessionUserId(authUserSession))
+                            .letterType(LetterType.FROM)
+                            .statusArr(getLetterSearchTypeStr())
+                            .limitNum(30)
+                            .pageNum(0)
+                            .build();
+
+            List<LetterDto> mockReturnLetterList = new ArrayList<>();
+            mockReturnLetterList.add(LetterDto.builder().letterId(1).build());
+            mockReturnLetterList.add(LetterDto.builder().letterId(2).build());
+            mockReturnLetterList.add(LetterDto.builder().letterId(3).build());
+
+            // mock
+            when(letterMapper.selectLetterListByUserIdAndTypeFrom(requestDto))
+                    .thenReturn(mockReturnLetterList);
+
+            // when
+            List<LetterDto> result = letterService.getLetterListByUserId(requestDto);
+
+            // then
+            assertEquals(result, mockReturnLetterList);
+        }
+
+        String getLetterSearchTypeStr() {
+
+            String searchListStr = "(";
+
+            for (int i = 0; i < LetterStatus.SEARCH_STATUS_ARR.length; i++) {
+                searchListStr += "\'" + LetterStatus.SEARCH_STATUS_ARR[i] + "\',";
+                if (i != LetterStatus.SEARCH_STATUS_ARR.length - 1) {
+                    searchListStr += ",";
+                }
+            }
+            searchListStr += ")";
+            return searchListStr;
+        }
     }
 
-    @Test
-    @DisplayName("DB에 letterId의 쪽지가 존재 하는 경우 Return으로 True를 획득한다.")
-    void deleteLetter_WhenIsExistsLetter_ThenReturnTrue() {
-      //given
-      int nullLetterId = 99999;
-      LetterDto requestDto = new LetterDto();
-      requestDto.setLetterId(nullLetterId);
-      requestDto.setType(LetterType.TO);
+    @Order(4)
+    @Nested
+    @DisplayName("쪽지 삭제 테스트")
+    class LetterDeleteTest {
 
-      //mock
-      when(letterMapper.updateLetterToStatusByLetterIdAndToUserId(any())).thenReturn(1);
+        @Test
+        @DisplayName("Constants에 없는 Type이 입력된 경우 BadRequest Exception이 발생한다.")
+        void deleteLetter_WhenLetterTypeNotExistsConstants_ThenBadRequestException() {
+            // given
+            LetterDto requestDto = new LetterDto();
+            requestDto.setType(null);
 
-      //when
-      boolean result = letterService.deleteLetter(requestDto, authUserSession);
+            // when
+            Exception e =
+                    assertThrows(
+                            IllegalArgumentException.class,
+                            () -> {
+                                letterService.deleteLetter(requestDto, authUserSession);
+                            });
 
-      //then
-      assertTrue(result);
+            // then
+            assertEquals(e.getMessage(), ExceptionMessage.BAD_REQUEST);
+        }
+
+        @Test
+        @DisplayName("DB에 letterId의 쪽지가 없는 경우 Return으로 False를 획득한다.")
+        void deleteLetter_WhenIsNotExistsLetter_ThenReturnFalse() {
+            // given
+            int nullLetterId = 99999;
+            LetterDto requestDto = new LetterDto();
+            requestDto.setLetterId(nullLetterId);
+            requestDto.setType(LetterType.TO);
+
+            // mock
+            when(letterMapper.updateLetterToStatusByLetterIdAndToUserId(any())).thenReturn(0);
+
+            // when
+            boolean result = letterService.deleteLetter(requestDto, authUserSession);
+
+            // then
+            assertFalse(result);
+        }
+
+        @Test
+        @DisplayName("DB에 letterId의 쪽지가 존재 하는 경우 Return으로 True를 획득한다.")
+        void deleteLetter_WhenIsExistsLetter_ThenReturnTrue() {
+            // given
+            int nullLetterId = 99999;
+            LetterDto requestDto = new LetterDto();
+            requestDto.setLetterId(nullLetterId);
+            requestDto.setType(LetterType.TO);
+
+            // mock
+            when(letterMapper.updateLetterToStatusByLetterIdAndToUserId(any())).thenReturn(1);
+
+            // when
+            boolean result = letterService.deleteLetter(requestDto, authUserSession);
+
+            // then
+            assertTrue(result);
+        }
     }
-  }
-
 }

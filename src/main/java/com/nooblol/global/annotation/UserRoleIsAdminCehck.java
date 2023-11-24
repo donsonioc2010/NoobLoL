@@ -1,5 +1,3 @@
 package com.nooblol.global.annotation;
 
-public @interface UserRoleIsAdminCehck {
-
-}
+public @interface UserRoleIsAdminCehck {}

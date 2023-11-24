@@ -14,28 +14,28 @@ import org.springframework.cache.annotation.CacheEvict;
 @Mapper
 public interface CategoryMapper {
 
-  @CacheEvict(value = "category", allEntries = true, key = "#status")
-  List<CategoryDto> selectCategoryList(int status);
+    @CacheEvict(value = "category", allEntries = true, key = "#status")
+    List<CategoryDto> selectCategoryList(int status);
 
-  CategoryDto selectCategoryByCategoryId(int categoryId);
+    CategoryDto selectCategoryByCategoryId(int categoryId);
 
-  @CacheEvict(value = "bbs", allEntries = true, key = "#searchBbsListDto.categoryId")
-  List<BbsDto> selectBbsList(SearchBbsListDto searchBbsListDto);
+    @CacheEvict(value = "bbs", allEntries = true, key = "#searchBbsListDto.categoryId")
+    List<BbsDto> selectBbsList(SearchBbsListDto searchBbsListDto);
 
-  @CacheEvict(value = "allBbs", allEntries = true)
-  List<BbsDto> selectAllBbsList();
+    @CacheEvict(value = "allBbs", allEntries = true)
+    List<BbsDto> selectAllBbsList();
 
-  int insertCategory(CategoryInsertDto categoryInsertDto);
+    int insertCategory(CategoryInsertDto categoryInsertDto);
 
-  int updateCategory(CategoryUpdateDto categoryUpdateDto);
+    int updateCategory(CategoryUpdateDto categoryUpdateDto);
 
-  int deleteCategory(CategoryDto CategoryDto);
+    int deleteCategory(CategoryDto CategoryDto);
 
-  BbsDto selectBbsByBbsId(int bbsId);
+    BbsDto selectBbsByBbsId(int bbsId);
 
-  int insertBbs(BbsInsertDto bbsInsertDto);
+    int insertBbs(BbsInsertDto bbsInsertDto);
 
-  int updateBbs(BbsUpdateDto bbsUpdateDto);
+    int updateBbs(BbsUpdateDto bbsUpdateDto);
 
-  int deleteBbs(BbsDto bbsDeleteDto);
+    int deleteBbs(BbsDto bbsDeleteDto);
 }

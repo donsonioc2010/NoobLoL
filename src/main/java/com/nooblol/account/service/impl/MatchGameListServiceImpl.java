@@ -26,95 +26,94 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class MatchGameListServiceImpl implements MatchGameListService {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
-  private final RiotConfiguration riotConfiguration;
-  private final ObjectMapper objectMapper;
-  private final RestTemplate restTemplate;
-  private final HttpHeaders initRiotHeader;
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final RiotConfiguration riotConfiguration;
+    private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
+    private final HttpHeaders initRiotHeader;
 
-  @Override
-  public ResponseDto getMatchListId(String puuid) {
-    return getMatchListIdProcessByRiot(puuid);
-  }
-
-  @Override
-  public ResponseDto getMatchListIdProcessByRiot(String puuid) {
-    String uri = getMakeUri(puuid);
-    if (!StringUtils.isBlank(uri)) {
-      ResponseEntity response = responseResult(uri);
-      if (response != null) {
-        return makeResponseToList(response);
-      }
+    @Override
+    public ResponseDto getMatchListId(String puuid) {
+        return getMatchListIdProcessByRiot(puuid);
     }
 
-    return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-  }
+    @Override
+    public ResponseDto getMatchListIdProcessByRiot(String puuid) {
+        String uri = getMakeUri(puuid);
+        if (!StringUtils.isBlank(uri)) {
+            ResponseEntity response = responseResult(uri);
+            if (response != null) {
+                return makeResponseToList(response);
+            }
+        }
 
-  @Override
-  public String getApiReplaceByPuuid(String puuid) {
-    if (StringUtils.isBlank(puuid)) {
-      return null;
+        return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
     }
-    return riotConfiguration.getMatchListSearchByPuuid().replaceAll("\\{puuid\\}", puuid);
-  }
 
-  /**
-   * Start = 최근 몇경기부터 가져올지에 대한 항목 Count = 몇경기의 MatchId를 가져올지 조절, Max = 100
-   *
-   * @param puuid
-   * @return
-   */
-  private String getMakeUri(String puuid) {
-    String strUri = riotConfiguration.getMatchDomain() + getApiReplaceByPuuid(puuid);
-    URI uri;
-    try {
-      uri = new URIBuilder(strUri)
-          .addParameter("start", String.valueOf(0))
-          .addParameter("count", String.valueOf(50))
-          .build();
-      return uri.toString();
-    } catch (URISyntaxException e) {
-      log.error("URI Build Error : " + e.getMessage());
-      return null;
+    @Override
+    public String getApiReplaceByPuuid(String puuid) {
+        if (StringUtils.isBlank(puuid)) {
+            return null;
+        }
+        return riotConfiguration.getMatchListSearchByPuuid().replaceAll("\\{puuid\\}", puuid);
     }
-  }
 
-  private ResponseEntity responseResult(String uri) {
-    try {
-      return restTemplate.exchange(
-          uri, HttpMethod.GET, new HttpEntity<String>(initRiotHeader), String.class
-      );
-    } catch (Exception e) { //예외 상황이 발생한 경우 null을 Return하여 Not_Found를 타도록 함
-      log.error("Riot Connect Error : " + e.getMessage());
-      return null;
+    /**
+     * Start = 최근 몇경기부터 가져올지에 대한 항목 Count = 몇경기의 MatchId를 가져올지 조절, Max = 100
+     *
+     * @param puuid
+     * @return
+     */
+    private String getMakeUri(String puuid) {
+        String strUri = riotConfiguration.getMatchDomain() + getApiReplaceByPuuid(puuid);
+        URI uri;
+        try {
+            uri =
+                    new URIBuilder(strUri)
+                            .addParameter("start", String.valueOf(0))
+                            .addParameter("count", String.valueOf(50))
+                            .build();
+            return uri.toString();
+        } catch (URISyntaxException e) {
+            log.error("URI Build Error : " + e.getMessage());
+            return null;
+        }
     }
-  }
 
-  private ResponseDto makeResponseToList(ResponseEntity response) {
-    HttpStatus sameStatus = HttpStatus.valueOf(response.getStatusCode().value());
-    if (sameStatus == HttpStatus.OK) {
-      return new ResponseDto(sameStatus.value(), getResponseBodyToList(response));
+    private ResponseEntity responseResult(String uri) {
+        try {
+            return restTemplate.exchange(
+                    uri, HttpMethod.GET, new HttpEntity<String>(initRiotHeader), String.class);
+        } catch (Exception e) { // 예외 상황이 발생한 경우 null을 Return하여 Not_Found를 타도록 함
+            log.error("Riot Connect Error : " + e.getMessage());
+            return null;
+        }
     }
-    if (sameStatus != null) {
-      return new ResponseDto(sameStatus.value(), sameStatus);
-    }
-    return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
-  }
 
-  /**
-   * MatchId는 가장 최근 MatchId가 최상단에 오며, 순차적으로 가져와야 하여 ArrayList를 반환한다
-   *
-   * @param response
-   * @return
-   */
-  private ArrayList<String> getResponseBodyToList(ResponseEntity response) {
-    try {
-      String body = response.getBody().toString();
-      return objectMapper.readValue(body, new TypeReference<ArrayList<String>>() {
-      });
-    } catch (JsonProcessingException e) {
-      log.error("Json Parse Error : " + e.getMessage());
-      return null;
+    private ResponseDto makeResponseToList(ResponseEntity response) {
+        HttpStatus sameStatus = HttpStatus.valueOf(response.getStatusCode().value());
+        if (sameStatus == HttpStatus.OK) {
+            return new ResponseDto(sameStatus.value(), getResponseBodyToList(response));
+        }
+        if (sameStatus != null) {
+            return new ResponseDto(sameStatus.value(), sameStatus);
+        }
+        return new ResponseDto(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND);
     }
-  }
+
+    /**
+     * MatchId는 가장 최근 MatchId가 최상단에 오며, 순차적으로 가져와야 하여 ArrayList를 반환한다
+     *
+     * @param response
+     * @return
+     */
+    private ArrayList<String> getResponseBodyToList(ResponseEntity response) {
+        try {
+            String body = response.getBody().toString();
+            return objectMapper.readValue(body, new TypeReference<ArrayList<String>>() {});
+        } catch (JsonProcessingException e) {
+            log.error("Json Parse Error : " + e.getMessage());
+            return null;
+        }
+    }
 }

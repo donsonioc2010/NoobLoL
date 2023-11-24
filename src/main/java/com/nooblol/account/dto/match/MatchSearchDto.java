@@ -11,9 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MatchSearchDto {
 
-  private String puuid;
-  private String matchId;
-  private int pageNum;
-  private int limitNum;
-
+    private String puuid;
+    private String matchId;
+    private int pageNum;
+    private int limitNum;
 }
