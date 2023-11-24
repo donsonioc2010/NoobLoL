@@ -8,5 +8,7 @@ pluginManagement {
 }
 
 rootProject.name = 'NoobLoL'
+include 'storage:db-core'
+include 'tests:api-docs'
 include 'support:logging'
 include 'support:monitoring'
