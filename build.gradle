@@ -1,144 +1,121 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.1.4'
-    id 'io.spring.dependency-management' version '1.1.3'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
-    id("com.diffplug.spotless") version("6.11.0")
+    id 'java-library'
+    id 'org.springframework.boot' apply(false)
+    id 'io.spring.dependency-management' apply(false)
+    id 'org.asciidoctor.jvm.convert' apply(false)
+    id 'com.diffplug.spotless' apply(false)
+}
+
+allprojects {
+    group = "${projectGroup}"
+    version = "${applicationVersion}"
+    sourceCompatibility = project.javaVersion
+
+    repositories {
+        mavenCentral()
+    }
+
+
+    dependencies {
+        implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
+
+        // Web
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        // Validation
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        // DataBase
+        implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+        runtimeOnly 'com.h2database:h2'
+        testRuntimeOnly 'com.h2database:h2'
+
+        // Lombok
+        compileOnly 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        // Mail
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
+        implementation 'commons-io:commons-io:2.13.0'
+        implementation 'org.apache.commons:commons-lang3'
+        implementation 'org.apache.httpcomponents:httpclient'
+
+        // Test
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        // Spring Rest Docs
+        testImplementation 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    }
 
 }
 
-group = 'flab'
-version = '0.0.1-SNAPSHOT'
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.asciidoctor.jvm.convert'
 
-java {
-    sourceCompatibility = '17'
-}
+    // Spring Cloud 사용할 경우
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudDependenciesVersion}"
+        }
+    }
 
-configurations {
-    asciidoctorExt // (2)
-    compileOnly {
-        extendsFrom annotationProcessor
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    bootJar.enabled = false
+    jar.enabled = true
+
+    test {
+        // @Tag("develop"), @Tag("restdocs") 제외하고 실행한다는 의미
+        useJUnitPlatform {
+            excludeTags('develop', 'restdocs')
+        }
+    }
+
+    tasks.register('unitTest', Test) {
+        group = 'verification'
+        useJUnitPlatform {
+            excludeTags('develop', 'context', 'restdocs')
+        }
+    }
+
+    tasks.register('restDocsTest', Test) {
+        group = 'verification'
+        useJUnitPlatform {
+            includeTags('restdocs')
+        }
+    }
+
+
+    tasks.register('developTest', Test) {
+        group = 'verification'
+        useJUnitPlatform {
+            includeTags('develop')
+        }
+    }
+
+    tasks.named('asciidoctor') {
+        dependsOn restDocsTest
     }
 }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
-
-    // Web
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    // Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // DataBase
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'com.h2database:h2'
-    testRuntimeOnly 'com.h2database:h2'
-
-    // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    // Mail
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-    implementation 'commons-io:commons-io:2.13.0'
-    implementation 'org.apache.commons:commons-lang3'
-    implementation 'org.apache.httpcomponents:httpclient'
 
-    // Test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    // Spring Rest Docs
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-
-}
-
-//https://velog.io/@bum12ark/Spotless-%EC%BD%94%EB%93%9C-%ED%8F%AC%EB%A7%B7%ED%8C%85
-spotless {
-    java {
-        // import 순서 정의
-        importOrder(
-                "java",
-                "javax",
-                "lombok",
-                "org.springframework",
-                "",
-                "\\#",
-                "org.junit",
-                "\\#org.junit",
-                "com.guide",
-                "\\#com.guide"
-        )
-        // 사용하지 않는 import 제거
-        removeUnusedImports()
-        // 구글 자바 포맷 적용
-        googleJavaFormat()
-
-        indentWithTabs(2)
-        indentWithSpaces(4)
-        // 공백 제거
-        trimTrailingWhitespace()
-        // 끝부분 New Line 처리
-        endWithNewline()
-    }
-}
-
-tasks.named('test') {
-    outputs.dir snippetsDir //선언한 디렉토리에 문서의 생성
-    useJUnitPlatform()
-}
-
-ext {
-    snippetsDir = file('build/generated-snippets') //문서의 저장 위치
-}
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')  // (11)
-}
-
-asciidoctor {
-    configurations 'asciidoctorExt' // (7) //adoc파일 생성시 올바르게 include하기 위함
-    baseDirFollowsSourceFile() // (8)
-    inputs.dir snippetsDir // (9) /snippets 디렉토리를 입력 설정함
-    dependsOn test // (10) //문서가 작성되기 전에 테스트가 실행되도록 작업 의존 추가
-}
-
-task copyDocument(type: Copy)  { // 생성된 docs 파일을 build시 static 아래에 docs로 복사!
-    dependsOn bootJar
-
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
-
-//Plain생성을 막기 위함
-jar.enabled=false
-
-//Build FileName Change app.jar
-bootJar {
-    dependsOn asciidoctor
-    from("${asciidoctor.outputDir}") {
-        into 'static/docs'
-    }
-    archiveFileName = 'app.jar'
-}
-
-build {
-    dependsOn copyDocument // build시 copy 실행
-}
