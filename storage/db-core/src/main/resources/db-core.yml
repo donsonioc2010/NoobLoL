@@ -5,7 +5,16 @@ spring:
       ddl-auto: none
     properties:
       hibernate.default_batch_fetch_size: 100
-
+#Setting MyBatis
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: null
+    call-setters-on-nulls: true
+    multiple-result-sets-enabled: false
+  type-aliases-package: com.nooblol.*.*
+  mapper-locations: classpath:mybatis/mapper/*/*.xml
+  type-handlers-package: com.nooblol.global.utils.typehandler
 ---
 spring.config.activate.on-profile: local
 
@@ -69,6 +78,7 @@ storage:
         maintainTimeStats: false
 
 ---
+#개발정보는 그래봐야 다시만들어야함~
 spring.config.activate.on-profile: dev
 
 storage:

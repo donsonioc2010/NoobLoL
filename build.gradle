@@ -14,52 +14,6 @@ allprojects {
     repositories {
         mavenCentral()
     }
-
-
-    dependencies {
-        implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
-
-        // Web
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-
-        // Validation
-        implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-        // DataBase
-        implementation 'org.springframework.boot:spring-boot-starter-cache'
-        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-        runtimeOnly 'com.mysql:mysql-connector-j'
-        runtimeOnly 'com.h2database:h2'
-        testRuntimeOnly 'com.h2database:h2'
-
-        // Lombok
-        compileOnly 'org.projectlombok:lombok'
-        testCompileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
-        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-        testAnnotationProcessor 'org.projectlombok:lombok'
-        testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-        // Mail
-        implementation 'org.springframework.boot:spring-boot-starter-mail'
-        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-
-        implementation 'org.springframework.boot:spring-boot-starter-aop'
-        implementation 'commons-io:commons-io:2.13.0'
-        implementation 'org.apache.commons:commons-lang3'
-        implementation 'org.apache.httpcomponents:httpclient'
-
-        // Test
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-        // Spring Rest Docs
-        testImplementation 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-        testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    }
-
 }
 
 subprojects {
@@ -76,6 +30,42 @@ subprojects {
     }
 
     dependencies {
+        // Lombok
+        compileOnly 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+
+        // Web
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        // Validation
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        // DataBase
+        implementation 'org.springframework.boot:spring-boot-starter-cache'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
+        // https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+        implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
+
+        // Mail
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
+        implementation 'commons-io:commons-io:2.13.0'
+        implementation 'org.apache.commons:commons-lang3'
+
+        // Test
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 

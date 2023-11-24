@@ -8,7 +8,10 @@ pluginManagement {
 }
 
 rootProject.name = 'NoobLoL'
+include 'core:core-enum'
+include 'core:core-api'
 include 'storage:db-core'
 include 'tests:api-docs'
 include 'support:logging'
 include 'support:monitoring'
+include 'clients:client-example'
