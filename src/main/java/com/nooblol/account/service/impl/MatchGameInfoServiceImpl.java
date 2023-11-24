@@ -164,6 +164,8 @@ public class MatchGameInfoServiceImpl implements MatchGameInfoService {
     List<String> existsMatchIdList =
         matchGameInfoMapper.existsMatchIdListByMatch(matchIdListBuilder.toString());
 
+    System.out.println("hiS");
+
     return matchIdList.stream()
         .filter(matchId -> !existsMatchIdList.contains(matchId))
         .collect(Collectors.toList());

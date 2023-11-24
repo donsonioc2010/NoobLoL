@@ -64,6 +64,11 @@ public class SummonerServiceImpl implements SummonerService {
         }
       } else {
         summonerMapper.insertSummonerAccount(riotSearchData);
+        return;
+      }
+
+      if (!riotSearchData.equals(serviceDBData)) {
+        summonerMapper.updateSummonerAccount(riotSearchData);
       }
     }
   }

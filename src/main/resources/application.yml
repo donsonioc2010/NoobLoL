@@ -26,10 +26,14 @@ spring:
 
   #NoHandlerException Setting
   mvc:
+    #throw-exception-if-no-handler-found: false
     throw-exception-if-no-handler-found: true
+
   web:
     resources:
       add-mappings: false
+      #add-mappings: true
+
 
 #Embedded Tomcat Session TimeOut
 server:

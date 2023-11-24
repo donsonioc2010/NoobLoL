@@ -3,8 +3,8 @@ package com.nooblol.user.controller;
 import com.nooblol.global.annotation.LetterTypeValidation;
 import com.nooblol.global.annotation.UserLoginCheck;
 import com.nooblol.global.dto.ResponseDto;
-import com.nooblol.global.utils.ResponseUtils;
 import com.nooblol.global.utils.ResponseEnum;
+import com.nooblol.global.utils.ResponseUtils;
 import com.nooblol.global.utils.SessionUtils;
 import com.nooblol.user.dto.LetterDto;
 import com.nooblol.user.dto.LetterInsertRequestDto;
@@ -117,7 +117,7 @@ public class LetterController {
   @LetterTypeValidation
   @DeleteMapping("/{type}/{letterId}")
   public ResponseDto deleteLetter(
-      @PathVariable @NotBlank(message = LetterConstants.LETTER_TYPE_NULL) LetterType type,
+      @PathVariable @NotNull(message = LetterConstants.LETTER_TYPE_NULL) LetterType type,
       @PathVariable @NotNull(message = LetterConstants.LETTER_ID_NULL) int letterId,
       HttpSession session
   ) {
