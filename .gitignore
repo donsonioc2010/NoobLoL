@@ -5,6 +5,7 @@ build/**
 .env
 
 # Log file
+**/log/**
 *.log
 
 
